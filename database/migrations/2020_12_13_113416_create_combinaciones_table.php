@@ -20,6 +20,7 @@ class CreateCombinacionesTable extends Migration
             $table->string('ean13')->nullable();
             $table->double('precio_sin_iva', 10, 2)->nullable();
             $table->bigInteger('cantidad')->nullable();
+            $table->string('peso', 50)->nullable();
             $table->string('nombre_combinacion', 300)->nullable();
 
             $table->foreign('id_producto')->references('id_producto')->on('pim_productos')->onDelete('cascade');

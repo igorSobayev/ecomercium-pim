@@ -73,26 +73,10 @@
                               <div class="col-lg-12">
                                 <b-tabs pills card vertical>
                                   <b-tab title="Descripción corta" active>
-                                    <textarea
-                                      :name="'descr_corta-' + idioma.id_idioma"
-                                      :id="'descr_corta-' + idioma.id_idioma"
-                                      v-model="idioma.descr_corta"
-                                      class="form-control"
-                                      cols="15"
-                                      rows="4"
-                                      placeholder="Descripción corta"
-                                    ></textarea>
+                                    <vue-editor v-model="idioma.descr_corta" :editorToolbar="customToolbar"></vue-editor>
                                   </b-tab>
                                   <b-tab title="Descripción larga">
-                                    <textarea
-                                      :name="'descr_larga-' + idioma.id_idioma"
-                                      :id="'descr_larga-' + idioma.id_idioma"
-                                      v-model="idioma.descr_larga"
-                                      class="form-control"
-                                      cols="15"
-                                      rows="4"
-                                      placeholder="Descripción larga"
-                                    ></textarea>
+                                    <vue-editor v-model="idioma.descr_larga" :editorToolbar="customToolbar"></vue-editor>
                                   </b-tab>
                                 </b-tabs>
                               </div>
@@ -202,6 +186,10 @@
                               <input type="text" class="form-control" placeholder="123125590392" v-model="producto.ean13" />
                             </div>
                             <div class="input-group flex-nowrap mb-2">
+                              <span class="input-group-text" id="addon-wrapping">Peso</span>
+                              <input type="text" class="form-control" placeholder="125ml" v-model="producto.peso" />
+                            </div>
+                            <div class="input-group flex-nowrap mb-2">
                               <span class="input-group-text" id="addon-wrapping">Precio sin iva</span>
                               <input type="number" min="0" step=".01" v-model="producto.precio_sin_iva" class="form-control" />
                             </div>
@@ -292,7 +280,8 @@
                                   <th scope="col">Referencia</th>
                                   <th scope="col">Stock</th>
                                   <th scope="col">EAN13</th>
-                                  <th scope="col">Acciones</th>
+                                  <th scope="col" class="col-table-right">Peso</th>
+                                  <th scope="col" class="col-table-right">Acciones</th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -302,6 +291,7 @@
                                   <td><input type="text" name="referencia" v-model="combinacion.referencia" class="form-control" /></td>
                                   <td><input type="number" min="0" name="stock" v-model="combinacion.stock" class="form-control" /></td>
                                   <td><input type="text" name="ean13" v-model="combinacion.ean13" class="form-control" /></td>
+                                  <td><input type="text" name="peso" v-model="combinacion.peso" class="form-control" /></td>
                                   <td><button type="button" class="btn btn-danger" @click="eliminarCombinacion(index)">X</button></td>
                                 </tr>
                               </tbody>
@@ -316,6 +306,7 @@
                                   <td><input type="text" name="referencia" v-model="combinacion.referencia" class="form-control" /></td>
                                   <td><input type="number" min="0" name="stock" v-model="combinacion.stock" class="form-control" /></td>
                                   <td><input type="text" name="ean13" v-model="combinacion.ean13" class="form-control" /></td>
+                                  <td><input type="text" name="peso" v-model="combinacion.peso" class="form-control" /></td>
                                   <td><button type="button" class="btn btn-danger" @click="eliminarCombinacionNueva(index)">X</button></td>
                                 </tr>
                               </tbody>
@@ -427,7 +418,12 @@
 </template>
 
 <script>
+import { VueEditor } from "vue2-editor";
+
 export default {
+  components: {
+    VueEditor,
+  },
   mounted() {
     if (this.$route.params.id_producto != undefined) {
       this.loading = true;
@@ -439,6 +435,34 @@ export default {
   props: {},
   data() {
     return {
+      customToolbar: [
+        ["bold", "italic", "underline", "strike"],
+        [{ list: "ordered" }, { list: "bullet" }],
+        [
+          {
+            align: "",
+          },
+          {
+            align: "center",
+          },
+          {
+            align: "right",
+          },
+          {
+            align: "justify",
+          },
+        ],
+        ["blockquote"],
+        ["link", "code-block"],
+        [
+          {
+            color: [],
+          },
+          {
+            background: [],
+          },
+        ],
+      ],
       producto: {
         id_producto: "",
         activo: true,
@@ -449,6 +473,7 @@ export default {
         cantidad: "",
         producto_combinacion: 0,
         ean13: "",
+        peso: "",
         idiomas: [
           {
             id_producto_idioma: "",
@@ -520,6 +545,7 @@ export default {
                 referencia: "",
                 stock: this.producto.cantidad === "" ? 1 : this.producto.cantidad,
                 ean13: "",
+                peso: this.producto.peso === "" ? "" : this.producto.peso,
                 id_atributo: [talla.id_atributo, color.id_atributo],
               });
             });
@@ -532,6 +558,7 @@ export default {
               referencia: "",
               stock: this.producto.cantidad === "" ? 1 : this.producto.cantidad,
               ean13: "",
+              peso: this.producto.peso === "" ? "" : this.producto.peso,
               id_atributo: [talla.id_atributo],
             });
           });
@@ -543,6 +570,7 @@ export default {
               referencia: "",
               stock: this.producto.cantidad === "" ? 1 : this.producto.cantidad,
               ean13: "",
+              peso: this.producto.peso === "" ? "" : this.producto.peso,
               id_atributo: [color.id_atributo],
             });
           });
@@ -681,6 +709,7 @@ export default {
       this.producto.producto_combinacion = this.productoBruto.producto_combinacion;
       this.producto.marca = this.productoBruto.marca;
       this.producto.ean13 = this.productoBruto.ean13;
+      this.producto.peso = this.productoBruto.peso;
       this.producto.activo = this.productoBruto.activo;
 
       this.combinaciones_actuales = this.productoBruto.combinaciones;
@@ -727,7 +756,7 @@ export default {
           axios
             .post(url, {
               producto: this.producto,
-              combinaciones_nuevas: this.combinaciones_producto_nuevas,
+              combinaciones: this.combinaciones_producto_nuevas,
             })
             .then((respuesta) => {
               if (this.media_multiple.length > 0) {
@@ -986,5 +1015,9 @@ export default {
 
 .container-atributos-seleccionados .badge i {
   cursor: pointer;
+}
+
+.col-table-right {
+  text-align: right;
 }
 </style>

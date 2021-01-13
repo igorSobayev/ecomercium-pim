@@ -23,6 +23,7 @@ class CreateProductosTable extends Migration
             $table->boolean('producto_combinacion')->default(false);
             $table->boolean('activo')->default(true);
             $table->string('ean13')->nullable();
+            $table->string('peso', 50)->nullable();
             $table->timestamps();
         });
     }

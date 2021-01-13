@@ -15,6 +15,8 @@ import {
     VueSpinners
 } from '@saeris/vue-spinners'
 
+import { VueEditor } from "vue2-editor";
+
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -32,6 +34,9 @@ Vue.use(VueAxios, Axios)
 Vue.use(SweetModal)
 Vue.use(VuejsDialog);
 Vue.use(Vuex)
+
+Vue.use(VueEditor)
+
 
 /**
  * The following block of code may be used to automatically register your

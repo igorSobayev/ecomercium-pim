@@ -33,7 +33,8 @@ class ProductosController extends Controller
             'cantidad' => $request->producto['cantidad'],
             'producto_combinacion' => $request->producto['producto_combinacion'],
             'ean13' => $request->producto['ean13'],
-            'marca' => $request->producto['marca']
+            'marca' => $request->producto['marca'],
+            'peso' => $request->producto['peso']
         ]);
 
         // Valores por defecto en caso de estar vacío alguno de los otros idiomas
@@ -55,6 +56,7 @@ class ProductosController extends Controller
         }
 
         $descr_seo_defecto = $request->producto['idiomas'][0]['descr_seo'];
+        $peso_default = $request->producto['peso'];
 
         // Creo productos en diferentes idiomas
         foreach ($request->producto['idiomas'] as $pro_idioma) {
@@ -83,7 +85,8 @@ class ProductosController extends Controller
                     'ean13' => $combinacion['ean13'] ?? $request->producto['ean13'] . '-' . $key,
                     'precio_sin_iva' => $combinacion['precio'],
                     'cantidad' => $combinacion['stock'],
-                    'nombre_combinacion' => $combinacion['nombre_combinacion']
+                    'nombre_combinacion' => $combinacion['nombre_combinacion'],
+                    'peso' => $combinacion['peso'] ?? $peso_default
                 ]);
 
                 foreach ($combinacion['id_atributo'] as $atri_combi) {
@@ -115,7 +118,8 @@ class ProductosController extends Controller
                 'cantidad' => $request->producto['cantidad'],
                 'producto_combinacion' => $request->producto['producto_combinacion'],
                 'ean13' => $request->producto['ean13'],
-                'marca' => $request->producto['marca']
+                'marca' => $request->producto['marca'],
+                'peso' => $request->producto['peso']
             ]);
 
         // Valores por defecto en caso de estar vacío alguno de los otros idiomas
@@ -137,6 +141,7 @@ class ProductosController extends Controller
         }
 
         $descr_seo_defecto = $request->producto['idiomas'][0]['descr_seo'];
+        $peso_default = $request->producto['peso'];
 
         // Creo productos en diferentes idiomas
         foreach ($request->producto['idiomas'] as $pro_idioma) {
@@ -166,7 +171,8 @@ class ProductosController extends Controller
                     'ean13' => $combinacion['ean13'] ?? $request->producto['ean13'] . '-' . $key,
                     'precio_sin_iva' => $combinacion['precio'],
                     'cantidad' => $combinacion['stock'],
-                    'nombre_combinacion' => $combinacion['nombre_combinacion']
+                    'nombre_combinacion' => $combinacion['nombre_combinacion'],
+                    'peso' => $combinacion['peso'] ?? $peso_default
                 ]);
 
                 foreach ($combinacion['id_atributo'] as $atri_combi) {
@@ -185,7 +191,8 @@ class ProductosController extends Controller
                         'ean13' => $combinacion['ean13'] ?? $request->producto['ean13'] . '-' . $key,
                         'precio_sin_iva' => $combinacion['precio'],
                         'cantidad' => $combinacion['stock'],
-                        'nombre_combinacion' => $combinacion['nombre_combinacion']
+                        'nombre_combinacion' => $combinacion['nombre_combinacion'],
+                        'peso' => $combinacion['peso'] ?? $peso_default
                     ]);
             }
 
@@ -220,7 +227,8 @@ class ProductosController extends Controller
             'producto_combinacion',
             'activo',
             'ean13',
-            'marca'
+            'marca',
+            'peso'
         )->where('id_producto', $id_producto)->first();
 
         $producto_idiomas = ProductoIdioma::select(
@@ -249,7 +257,8 @@ class ProductosController extends Controller
             'ean13',
             'precio_sin_iva as precio',
             'cantidad as stock',
-            'nombre_combinacion'
+            'nombre_combinacion',
+            'peso'
         )->where('id_producto', $id_producto)->get();
 
         $producto->productos_idiomas = $producto_idiomas;

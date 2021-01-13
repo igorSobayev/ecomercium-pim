@@ -14,6 +14,6 @@ class Combinacion extends Model
 
     protected $fillable = [
         'id_producto', 'referencia', 'ean13', 'precio_sin_iva',
-        'cantidad', 'nombre_combinacion'
+        'cantidad', 'nombre_combinacion', 'peso'
     ];
 }
