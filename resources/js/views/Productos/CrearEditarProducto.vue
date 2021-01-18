@@ -107,7 +107,7 @@
                               <!-- Slug -->
                               <div class="col-lg-6">
                                 <div class="form-group">
-                                  <label class="control-label text-sm-right pt-2"> URL amigable </label>
+                                  <label class="control-label text-sm-right pt-2"> URL amigable <span class="text-danger">*</span> </label>
                                   <input
                                     type="text"
                                     :name="'slug-' + idioma.id_idioma"
@@ -394,7 +394,7 @@
           </form>
         </div>
         <div class="card-body contenedor-carga" v-else>
-          <h3 class="col-lg-12">Espere mientras termina de cargar su página</h3>
+          <h3 class="col-lg-12">Espere mientras termina de cargar su producto</h3>
           <div class="contenedor-carga">
             <!-- <bounce-loader color="#CD1317"></bounce-loader> -->
             <scale-loader color="#D1072E" :height="50" :width="8"></scale-loader>
@@ -425,12 +425,7 @@ export default {
     VueEditor,
   },
   mounted() {
-    if (this.$route.params.id_producto != undefined) {
-      this.loading = true;
-      this.editando = true;
-    }
-    this.cargarIdiomas();
-    this.cargarAtributos();
+    this.startView();
   },
   props: {},
   data() {
@@ -512,6 +507,14 @@ export default {
     };
   },
   methods: {
+    startView() {
+      if (this.$route.params.id_producto != undefined) {
+        this.loading = true;
+        this.editando = true;
+      }
+      this.cargarIdiomas();
+      this.cargarAtributos();
+    },
     eliminarCombinacion(index) {
       this.combinaciones_eliminadas.push(this.combinaciones_actuales[index].id_combinacion);
       this.combinaciones_actuales.splice(index, 1);
@@ -681,7 +684,7 @@ export default {
       return URL.createObjectURL(file);
     },
     /**
-     * Método para cargar los datos de la página que vamos a editar
+     * Método para cargar los datos del producto que vamos a editar
      */
     cargarProductoEditar(id_producto) {
       let url = "/pim/productos/cargar-datos-producto-editar/" + this.$route.params.id_producto;
@@ -761,6 +764,11 @@ export default {
             .then((respuesta) => {
               if (this.media_multiple.length > 0) {
                 this.crearVariosArchivos(respuesta.data.id_producto);
+              } else {
+                // this.$router.push({ name: "editar-producto", params: { id_producto: respuesta.data.id_producto } });
+                // this.startView();
+                this.mensajeExito = "¡Se ha guardado el producto con éxito!";
+                this.$refs.modal.open()
               }
             })
             .catch((error) => {
@@ -774,7 +782,7 @@ export default {
 
               this.loading = false;
               this.mensajeError =
-                "<p class='text-white mb-2'>¡Ha ocurrido un error al crear la página!</p><p class='mb-1 text-white'>Mensaje del error: </p> <p><code>" +
+                "<p class='text-white mb-2'>¡Ha ocurrido un error al crear el producto!</p><p class='mb-1 text-white'>Mensaje del error: </p> <p><code>" +
                 mensaje_error +
                 "</code></p>";
               this.$refs.modalError.open();
@@ -786,7 +794,7 @@ export default {
       }
     },
     /**
-     * Método para guardar los datos de una página ya editada
+     * Método para guardar los datos de una producto ya editada
      */
     guardarProductoEditado() {
       let message = {
@@ -874,40 +882,41 @@ export default {
 
       if (this.editando) {
         this.cargarProductoEditar(this.$route.params.id_producto);
+      } else {
+        this.loading = false
       }
     },
     /**
-     * Método para inicializar el objeto página
+     * Método para inicializar el objeto producto
      */
     borrarDatos() {
-      this.pagina = {
-        id_pagina: "",
-        id_pais: "",
-        id_pagina_padre: "ninguna",
+      this.producto = {
+        id_producto: "",
         activo: true,
-        pagina_indexada: true,
-        tipo_pagina: "landing",
-        header_activo: true,
-        footer_activo: true,
-        codigo_css: "",
-        codigo_js: "",
+        referencia: "",
+        maraca: "",
+        precio_sin_iva: "",
+        precio_coste: "",
+        cantidad: "",
+        producto_combinacion: 0,
+        ean13: "",
+        peso: "",
         idiomas: [
           {
-            id_paginas_cont_idioma: "",
-            id_pagina: "",
+            id_producto_idioma: "",
+            id_producto: "",
             id_idioma: "",
-            titulo_pagina: "",
-            contenido: "",
-            titulo_seo: "",
-            descripcion_seo: "",
+            nombre_producto: "",
+            descr_corta: "",
+            descr_larga: "",
+            tit_seo: "",
+            descr_seo: "",
             slug: "",
             nombre: "",
-            iso_code_idioma: "",
-            codigo_idioma: "",
             icono_idioma: "",
           },
         ],
-      };
+      },
 
       this.componerObjeto();
     },

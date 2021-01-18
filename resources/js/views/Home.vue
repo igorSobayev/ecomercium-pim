@@ -1,6 +1,6 @@
 <template>
   <section class="body">
-    <h1>Esta es la home de la web, todavía esta en desarrollo</h1>
+    <h1>Home del PIM, aquí se podría añadir enlaces a las diferentes secciones o cualquier otro elemento.</h1>
   </section>
 </template>
 
