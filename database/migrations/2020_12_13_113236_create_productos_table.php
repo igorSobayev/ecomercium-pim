@@ -15,14 +15,15 @@ class CreateProductosTable extends Migration
     {
         Schema::create('pim_productos', function (Blueprint $table) {
             $table->bigIncrements('id_producto');
-            $table->string('referencia');
-            $table->string('marca', 160);
-            $table->double('precio_sin_iva', 10, 2);
+            $table->string('referencia')->nullable();
+            $table->string('marca', 160)->nullable();
+            $table->double('precio_sin_iva', 10, 2)->nullable();
             $table->double('precio_coste', 10, 2)->nullable();
-            $table->bigInteger('cantidad');
+            $table->bigInteger('cantidad')->nullable();
             $table->boolean('producto_combinacion')->default(false);
             $table->boolean('activo')->default(true);
             $table->string('ean13')->nullable();
+            $table->string('cod_arancel')->nullable();
             $table->string('peso', 50)->nullable();
             $table->timestamps();
         });

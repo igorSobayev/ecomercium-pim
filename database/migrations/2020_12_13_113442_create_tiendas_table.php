@@ -15,7 +15,7 @@ class CreateTiendasTable extends Migration
     {
         Schema::create('pim_tiendas', function (Blueprint $table) {
             $table->bigIncrements('id_tienda');
-            $table->string('nombre_tienda', 250);
+            $table->string('nombre_tienda', 250)->nulalble();
             $table->timestamps();
         });
     }

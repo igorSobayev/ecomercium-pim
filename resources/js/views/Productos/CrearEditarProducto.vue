@@ -186,6 +186,10 @@
                               <input type="text" class="form-control" placeholder="123125590392" v-model="producto.ean13" />
                             </div>
                             <div class="input-group flex-nowrap mb-2">
+                              <span class="input-group-text" id="addon-wrapping">Código arancel</span>
+                              <input type="text" class="form-control" placeholder="123125590392" v-model="producto.cod_arancel" />
+                            </div>
+                            <div class="input-group flex-nowrap mb-2">
                               <span class="input-group-text" id="addon-wrapping">Peso</span>
                               <input type="text" class="form-control" placeholder="125ml" v-model="producto.peso" />
                             </div>
@@ -275,11 +279,12 @@
                             <table class="table">
                               <thead>
                                 <tr>
-                                  <th scope="col">Combinaciones</th>
+                                  <th scope="col">Nombre</th>
                                   <th scope="col">Precio</th>
                                   <th scope="col">Referencia</th>
                                   <th scope="col">Stock</th>
                                   <th scope="col">EAN13</th>
+                                  <th scope="col">Cod. arancel</th>
                                   <th scope="col" class="col-table-right">Peso</th>
                                   <th scope="col" class="col-table-right">Acciones</th>
                                 </tr>
@@ -291,6 +296,7 @@
                                   <td><input type="text" name="referencia" v-model="combinacion.referencia" class="form-control" /></td>
                                   <td><input type="number" min="0" name="stock" v-model="combinacion.stock" class="form-control" /></td>
                                   <td><input type="text" name="ean13" v-model="combinacion.ean13" class="form-control" /></td>
+                                  <td><input type="text" name="ean13" v-model="combinacion.cod_arancel" class="form-control" /></td>
                                   <td><input type="text" name="peso" v-model="combinacion.peso" class="form-control" /></td>
                                   <td><button type="button" class="btn btn-danger" @click="eliminarCombinacion(index)">X</button></td>
                                 </tr>
@@ -306,6 +312,7 @@
                                   <td><input type="text" name="referencia" v-model="combinacion.referencia" class="form-control" /></td>
                                   <td><input type="number" min="0" name="stock" v-model="combinacion.stock" class="form-control" /></td>
                                   <td><input type="text" name="ean13" v-model="combinacion.ean13" class="form-control" /></td>
+                                  <td><input type="text" name="ean13" v-model="combinacion.cod_arancel" class="form-control" /></td>
                                   <td><input type="text" name="peso" v-model="combinacion.peso" class="form-control" /></td>
                                   <td><button type="button" class="btn btn-danger" @click="eliminarCombinacionNueva(index)">X</button></td>
                                 </tr>
@@ -462,13 +469,14 @@ export default {
         id_producto: "",
         activo: true,
         referencia: "",
-        maraca: "",
+        marca: "",
         precio_sin_iva: "",
         precio_coste: "",
         cantidad: "",
         producto_combinacion: 0,
         ean13: "",
         peso: "",
+        cod_arancel: "",
         idiomas: [
           {
             id_producto_idioma: "",
@@ -548,6 +556,7 @@ export default {
                 referencia: "",
                 stock: this.producto.cantidad === "" ? 1 : this.producto.cantidad,
                 ean13: "",
+                cod_arancel: "",
                 peso: this.producto.peso === "" ? "" : this.producto.peso,
                 id_atributo: [talla.id_atributo, color.id_atributo],
               });
@@ -561,6 +570,7 @@ export default {
               referencia: "",
               stock: this.producto.cantidad === "" ? 1 : this.producto.cantidad,
               ean13: "",
+              cod_arancel: "",
               peso: this.producto.peso === "" ? "" : this.producto.peso,
               id_atributo: [talla.id_atributo],
             });
@@ -573,6 +583,7 @@ export default {
               referencia: "",
               stock: this.producto.cantidad === "" ? 1 : this.producto.cantidad,
               ean13: "",
+              cod_arancel: "",
               peso: this.producto.peso === "" ? "" : this.producto.peso,
               id_atributo: [color.id_atributo],
             });
@@ -629,6 +640,7 @@ export default {
       axios
         .post(url, file)
         .then((respuesta) => {
+          this.borrarDatos();
           this.loading = false;
           this.mensajeExito = "¡Se ha guardado el producto con éxito!";
           this.$refs.modal.open();
@@ -712,6 +724,7 @@ export default {
       this.producto.producto_combinacion = this.productoBruto.producto_combinacion;
       this.producto.marca = this.productoBruto.marca;
       this.producto.ean13 = this.productoBruto.ean13;
+      this.producto.cod_arancel = this.productoBruto.cod_arancel;
       this.producto.peso = this.productoBruto.peso;
       this.producto.activo = this.productoBruto.activo;
 
@@ -767,8 +780,9 @@ export default {
               } else {
                 // this.$router.push({ name: "editar-producto", params: { id_producto: respuesta.data.id_producto } });
                 // this.startView();
+                this.borrarDatos();
                 this.mensajeExito = "¡Se ha guardado el producto con éxito!";
-                this.$refs.modal.open()
+                this.$refs.modal.open();
               }
             })
             .catch((error) => {
@@ -883,7 +897,7 @@ export default {
       if (this.editando) {
         this.cargarProductoEditar(this.$route.params.id_producto);
       } else {
-        this.loading = false
+        this.loading = false;
       }
     },
     /**
@@ -894,12 +908,13 @@ export default {
         id_producto: "",
         activo: true,
         referencia: "",
-        maraca: "",
+        marca: "",
         precio_sin_iva: "",
         precio_coste: "",
         cantidad: "",
         producto_combinacion: 0,
         ean13: "",
+        cod_arancel: "",
         peso: "",
         idiomas: [
           {
@@ -916,7 +931,11 @@ export default {
             icono_idioma: "",
           },
         ],
-      },
+      };
+      this.archivos_pesados = [];
+      this.media_multiple = [];
+      this.media_editar_preview = [];
+      this.media_editar_preview_eliminadas = [];
 
       this.componerObjeto();
     },

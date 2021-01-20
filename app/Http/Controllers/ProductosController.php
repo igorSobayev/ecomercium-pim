@@ -33,6 +33,7 @@ class ProductosController extends Controller
             'cantidad' => $request->producto['cantidad'],
             'producto_combinacion' => $request->producto['producto_combinacion'],
             'ean13' => $request->producto['ean13'],
+            'cod_arancel' => $request->producto['cod_arancel'],
             'marca' => $request->producto['marca'],
             'peso' => $request->producto['peso']
         ]);
@@ -83,6 +84,7 @@ class ProductosController extends Controller
                     'id_producto' => $producto->id_producto,
                     'referencia' => $combinacion['referencia'] ?? $request->producto['referencia'] . '-' . $key,
                     'ean13' => $combinacion['ean13'] ?? $request->producto['ean13'] . '-' . $key,
+                    'cod_arancel' => $combinacion['cod_arancel'] ?? $request->producto['cod_arancel'] . '-' . $key,
                     'precio_sin_iva' => $combinacion['precio'],
                     'cantidad' => $combinacion['stock'],
                     'nombre_combinacion' => $combinacion['nombre_combinacion'],
@@ -118,6 +120,7 @@ class ProductosController extends Controller
                 'cantidad' => $request->producto['cantidad'],
                 'producto_combinacion' => $request->producto['producto_combinacion'],
                 'ean13' => $request->producto['ean13'],
+                'cod_arancel' => $request->producto['cod_arancel'],
                 'marca' => $request->producto['marca'],
                 'peso' => $request->producto['peso']
             ]);
@@ -169,6 +172,7 @@ class ProductosController extends Controller
                     'id_producto' => $request->producto['id_producto'],
                     'referencia' => $combinacion['referencia'] ?? $request->producto['referencia'] . '-' . $key,
                     'ean13' => $combinacion['ean13'] ?? $request->producto['ean13'] . '-' . $key,
+                    'cod_arancel' => $combinacion['cod_arancel'] ?? $request->producto['cod_arancel'] . '-' . $key,
                     'precio_sin_iva' => $combinacion['precio'],
                     'cantidad' => $combinacion['stock'],
                     'nombre_combinacion' => $combinacion['nombre_combinacion'],
@@ -189,6 +193,7 @@ class ProductosController extends Controller
                     ->update([
                         'referencia' => $combinacion['referencia'] ?? $request->producto['referencia'] . '-' . $key,
                         'ean13' => $combinacion['ean13'] ?? $request->producto['ean13'] . '-' . $key,
+                        'cod_arancel' => $combinacion['cod_arancel'] ?? $request->producto['cod_arancel'] . '-' . $key,
                         'precio_sin_iva' => $combinacion['precio'],
                         'cantidad' => $combinacion['stock'],
                         'nombre_combinacion' => $combinacion['nombre_combinacion'],
@@ -227,6 +232,7 @@ class ProductosController extends Controller
             'producto_combinacion',
             'activo',
             'ean13',
+            'cod_arancel',
             'marca',
             'peso'
         )->where('id_producto', $id_producto)->first();
@@ -255,6 +261,7 @@ class ProductosController extends Controller
             'id_producto',
             'referencia',
             'ean13',
+            'cod_arancel',
             'precio_sin_iva as precio',
             'cantidad as stock',
             'nombre_combinacion',

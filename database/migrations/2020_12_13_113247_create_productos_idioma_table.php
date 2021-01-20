@@ -17,8 +17,8 @@ class CreateProductosIdiomaTable extends Migration
             $table->bigIncrements('id_producto_idioma');
             $table->unsignedBigInteger('id_producto')->nullable();
             $table->unsignedBigInteger('id_idioma')->nullable();
-            $table->string('nombre_producto', 300);
-            $table->string('slug', 300);
+            $table->string('nombre_producto', 300)->nullable();
+            $table->string('slug', 300)->nullable();
             $table->mediumText('descr_corta')->nullable();
             $table->mediumText('descr_larga')->nullable();
             $table->string('tit_seo', 300)->nullable();

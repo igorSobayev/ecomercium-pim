@@ -15,7 +15,7 @@ class Producto extends Model
     protected $fillable = [
         'referencia', 'precio_sin_iva', 'precio_coste',
         'cantidad', 'producto_combinacion', 'activo',
-        'ean13', 'marca', 'peso'
+        'ean13', 'marca', 'peso', 'cod_arancel'
     ];
 
     public function eliminarImgAsociadas(int $id_producto)

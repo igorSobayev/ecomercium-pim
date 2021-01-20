@@ -18,6 +18,7 @@ class CreateCombinacionesTable extends Migration
             $table->unsignedBigInteger('id_producto')->nullable();
             $table->string('referencia')->nullable();
             $table->string('ean13')->nullable();
+            $table->string('cod_arancel')->nullable();
             $table->double('precio_sin_iva', 10, 2)->nullable();
             $table->bigInteger('cantidad')->nullable();
             $table->string('peso', 50)->nullable();

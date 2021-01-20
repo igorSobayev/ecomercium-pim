@@ -15,7 +15,7 @@ class CreateAtributosTable extends Migration
     {
         Schema::create('pim_atributos', function (Blueprint $table) {
             $table->bigIncrements('id_atributo');
-            $table->string('tipo_atributo', 120);
+            $table->string('tipo_atributo', 120)->nullable();
             $table->string('color')->nullable();
             $table->timestamps();
         });
