@@ -39,6 +39,13 @@ Route::prefix('/')->group(function () {
     Route::post('/pim/tiendas/add-productos-tienda/{id_tienda}', [App\Http\Controllers\TiendasController::class, 'addProductosTienda']);
     Route::post('/pim/tiendas/remove-productos-tienda/{id_tienda}', [App\Http\Controllers\TiendasController::class, 'removeProductosTienda']);
 
+    // Rutas para controlar las conexiones de los webservices
+    Route::get('/pim/ps-webservices/test', [App\Http\Controllers\PrestaShopWebservicesController::class, 'test']);
+    Route::get('/pim/ps-webservices/test2', [App\Http\Controllers\PrestaShopWebservicesController::class, 'test2']);
+    Route::get('/pim/ps-webservices/test3', [App\Http\Controllers\PrestaShopWebservicesController::class, 'test3']);
+    Route::get('/pim/ps-webservices/test4', [App\Http\Controllers\PrestaShopWebservicesController::class, 'test4']);
+    Route::get('/pim/ps-webservices/test5', [App\Http\Controllers\PrestaShopWebservicesController::class, 'test5']);
+
     // IMPORTANTE, ESTO ES PARA ELIMINAR EL # DE LA URL
     Route::get('/{path}', [App\Http\Controllers\HomeController::class, 'index'])->where('path', '.*');
 });

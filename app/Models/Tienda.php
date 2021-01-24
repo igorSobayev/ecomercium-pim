@@ -13,7 +13,8 @@ class Tienda extends Model
     protected $primaryKey = 'id_tienda';
 
     protected $fillable = [
-        'nombre_tienda'
+        'nombre_tienda', 'tipo_tienda', 'api_key',
+        'store_root', 'debug'
     ];
 
     public function getNumProductos(int $id_tienda)

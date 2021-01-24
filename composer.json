@@ -15,7 +15,8 @@
         "intervention/image": "^2.5",
         "laravel/framework": "^8.12",
         "laravel/tinker": "^2.5",
-        "laravel/ui": "^3.1"
+        "laravel/ui": "^3.1",
+        "prestashop/prestashop-webservice-lib": "dev-master"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
@@ -40,7 +41,10 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "vendor/prestaShop/prestaShop-webservice-lib/PSWebServiceLibrary.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
