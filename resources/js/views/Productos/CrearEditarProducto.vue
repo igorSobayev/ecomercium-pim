@@ -252,7 +252,12 @@
                                     <u><strong>Atributos seleccionados actualmente:</strong></u>
                                   </p>
                                   <div class="container-atributos-seleccionados">
-                                    <b-badge
+                                    <b-badge variant="info" class="mr-1" v-for="(atributo, index) in atributos_seleccionados" :key="index + '-' + atributo.id_atributo">
+                                      {{ atributo.valor_atributo }} &nbsp; <i class="fas fa-times" @click="quitarAtributoSeleccionado(index)"></i>
+                                    </b-badge>
+
+                                    <!-- OLD -->
+                                    <!-- <b-badge
                                       variant="primary"
                                       class="mr-1"
                                       v-for="(sel_talla, index) in atributos_talla_seleccionados"
@@ -267,7 +272,7 @@
                                       :key="index + '-' + sel_color.id_atributo"
                                     >
                                       {{ sel_color.valor_atributo }} &nbsp; <i class="fas fa-times" @click="quitarColorSeleccionado(index)"></i>
-                                    </b-badge>
+                                    </b-badge> -->
                                   </div>
                                 </div>
                               </div>
@@ -332,7 +337,33 @@
                               </b-modal>
                             </div>
                             <b-card-group deck class="selector-atributos">
-                              <b-card header-tag="header" footer-tag="footer" class="mb-2 selector-atributos--tallas-card selector-atributos--card">
+                              <b-card header-tag="header" footer-tag="footer" class="mb-2 selector-atributos--card" v-for="(tipo, index) in atributosFinales" :key="index">
+                                <template #header>
+                                  <h6 class="mb-0 titulo-atributo">
+                                    {{ tipo.tipo_atributo }}
+                                  </h6>
+                                </template>
+                                <div class="row">
+                                  <div class="col-lg-6 atributo-col mb-1" v-for="(atributo, index2) in tipo.atributos" :key="index2">
+                                    <div class="form-check">
+                                      <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        v-model="atributos_seleccionados"
+                                        :value="{ id_atributo: atributo.id_atributo, valor_atributo: atributo.valor_atributo, tipo_atributo: atributo.tipo_atributo }"
+                                        :id="tipo.tipo_atribuo + '-' + index2 + '-' + atributo.id_atributo"
+                                      />
+                                      <label class="form-check-label" :for="tipo.tipo_atribuo + '-' + index2 + '-' + atributo.id_atributo">
+                                        <span class="cuadro-color" :style="'background-color:' + atributo.color" v-if="tipo.tipo_atributo === 'color'"></span>
+                                        {{ atributo.valor_atributo }}
+                                      </label>
+                                    </div>
+                                  </div>
+                                </div>
+                              </b-card>
+
+                              <!-- OLD -->
+                              <!-- <b-card header-tag="header" footer-tag="footer" class="mb-2 selector-atributos--tallas-card selector-atributos--card">
                                 <template #header>
                                   <h6 class="mb-0">Tallas</h6>
                                 </template>
@@ -372,7 +403,7 @@
                                     </div>
                                   </div>
                                 </div>
-                              </b-card>
+                              </b-card> -->
                             </b-card-group>
                           </div>
 
@@ -386,8 +417,8 @@
                           <!-- Fin boton guardar -->
                         </div>
                       </div>
-                    </div></b-tab
-                  >
+                    </div>
+                  </b-tab>
                 </b-tabs>
                 <!-- Boton guardar -->
                 <div class="row col-lg-12">
@@ -500,10 +531,19 @@ export default {
       media_multiple: [],
       media_editar_preview: [],
       media_editar_preview_eliminadas: [],
+      // Atributos
+
+      tipos_atributos: [],
+      atributos: [],
+      atributosFinales: [],
+      atributos_seleccionados: [],
+
       atributos_tallas: [],
       atributos_colores: [],
       atributos_talla_seleccionados: [],
       atributos_color_seleccionados: [],
+
+      // Combinaciones
       combinaciones_producto_nuevas: [],
       combinaciones_actuales: [],
       combinaciones_eliminadas: [],
@@ -515,13 +555,57 @@ export default {
     };
   },
   methods: {
+    cargarTiposAtributos() {
+      let url = "/pim/atributos/cargar-tipos-atributos";
+
+      axios
+        .get(url)
+        .then((respuesta) => {
+          this.tipos_atributos = [];
+          this.tipos_atributos = [...respuesta.data];
+          this.cargarAtributos();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    cargarAtributos() {
+      let url = "/pim/atributos/cargar-atributos";
+
+      axios
+        .get(url)
+        .then((respuesta) => {
+          this.atributos = [];
+          this.atributos = [...respuesta.data];
+          this.componerAtributosFinales();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    componerAtributosFinales() {
+      this.atributosFinales = [];
+      this.tipos_atributos.forEach((tipo_atributo, key) => {
+        this.atributosFinales.push({
+          id_tipo_atributo: tipo_atributo.id_tipo_atributo,
+          tipo_atributo: tipo_atributo.tipo_atributo,
+          atributos: [],
+        });
+        this.atributos.forEach((atributo) => {
+          if (atributo.tipo_atributo === tipo_atributo.tipo_atributo) {
+            this.atributosFinales[key].atributos.push(atributo);
+          }
+        });
+      });
+    },
     startView() {
       if (this.$route.params.id_producto != undefined) {
         this.loading = true;
         this.editando = true;
       }
       this.cargarIdiomas();
-      this.cargarAtributos();
+      this.cargarAtributosOld();
+      this.cargarTiposAtributos();
     },
     eliminarCombinacion(index) {
       this.combinaciones_eliminadas.push(this.combinaciones_actuales[index].id_combinacion);
@@ -530,7 +614,7 @@ export default {
     eliminarCombinacionNueva(index) {
       this.combinaciones_producto_nuevas.splice(index, 1);
     },
-    generarCombinaciones() {
+    generarCombinacionesOld() {
       let message = {
         title: "Confirmación",
         body: "¿Estas seguro de querer generar estas combinaciones?",
@@ -594,6 +678,178 @@ export default {
         this.atributos_talla_seleccionados = [];
       });
     },
+    generarCombinaciones() {
+      let message = {
+        title: "Confirmación",
+        body: "¿Estas seguro de querer generar estas combinaciones?",
+      };
+
+      let options = {
+        okText: "Generar",
+        cancelText: "Cancelar",
+        backgropClose: true,
+      };
+
+      this.$dialog.confirm(message, options).then((dialog) => {
+        var atributosSeleccionadosAgrupados = this.atributos_seleccionados.reduce((r, a) => {
+          r[a.tipo_atributo] = [...(r[a.tipo_atributo] || []), a];
+          return r;
+        }, {});
+        atributosSeleccionadosAgrupados = Object.values(atributosSeleccionadosAgrupados);
+
+        console.log(atributosSeleccionadosAgrupados);
+
+        // atributosSeleccionadosAgrupados.forEach((iterator) => {
+        if (atributosSeleccionadosAgrupados.length === 1) {
+          atributosSeleccionadosAgrupados[0].forEach((it_1) => {
+            this.combinaciones_producto_nuevas.push({
+              nombre_combinacion: it_1.tipo_atributo + " - " + it_1.valor_atributo,
+              precio: this.producto.precio_sin_iva === "" ? "" : this.producto.precio_sin_iva,
+              referencia: "",
+              stock: this.producto.cantidad === "" ? 1 : this.producto.cantidad,
+              ean13: "",
+              cod_arancel: "",
+              peso: this.producto.peso === "" ? "" : this.producto.peso,
+              id_atributo: [it_1.id_atributo],
+            });
+          });
+        } else if (atributosSeleccionadosAgrupados.length === 2) {
+          atributosSeleccionadosAgrupados[0].forEach((it_1) => {
+            atributosSeleccionadosAgrupados[1].forEach((it_2) => {
+              this.combinaciones_producto_nuevas.push({
+                nombre_combinacion: it_1.tipo_atributo + " - " + it_1.valor_atributo + ", " + it_2.tipo_atributo + " - " + it_2.valor_atributo,
+                precio: this.producto.precio_sin_iva === "" ? "" : this.producto.precio_sin_iva,
+                referencia: "",
+                stock: this.producto.cantidad === "" ? 1 : this.producto.cantidad,
+                ean13: "",
+                cod_arancel: "",
+                peso: this.producto.peso === "" ? "" : this.producto.peso,
+                id_atributo: [it_1.id_atributo, it_2.id_atributo],
+              });
+            });
+          });
+        } else if (atributosSeleccionadosAgrupados.length === 3) {
+          atributosSeleccionadosAgrupados[0].forEach((it_1) => {
+            atributosSeleccionadosAgrupados[1].forEach((it_2) => {
+              atributosSeleccionadosAgrupados[2].forEach((it_3) => {
+                this.combinaciones_producto_nuevas.push({
+                  nombre_combinacion:
+                    it_1.tipo_atributo +
+                    " - " +
+                    it_1.valor_atributo +
+                    ", " +
+                    it_2.tipo_atributo +
+                    " - " +
+                    it_2.valor_atributo +
+                    ", " +
+                    it_3.tipo_atributo +
+                    " - " +
+                    it_3.valor_atributo,
+                  precio: this.producto.precio_sin_iva === "" ? "" : this.producto.precio_sin_iva,
+                  referencia: "",
+                  stock: this.producto.cantidad === "" ? 1 : this.producto.cantidad,
+                  ean13: "",
+                  cod_arancel: "",
+                  peso: this.producto.peso === "" ? "" : this.producto.peso,
+                  id_atributo: [it_1.id_atributo, it_2.id_atributo, it_3.id_atributo],
+                });
+              });
+            });
+          });
+        } else if (atributosSeleccionadosAgrupados.length === 4) {
+          atributosSeleccionadosAgrupados[0].forEach((it_1) => {
+            atributosSeleccionadosAgrupados[1].forEach((it_2) => {
+              atributosSeleccionadosAgrupados[2].forEach((it_3) => {
+                atributosSeleccionadosAgrupados[3].forEach((it_4) => {
+                  this.combinaciones_producto_nuevas.push({
+                    nombre_combinacion:
+                      it_1.tipo_atributo +
+                      " - " +
+                      it_1.valor_atributo +
+                      ", " +
+                      it_2.tipo_atributo +
+                      " - " +
+                      it_2.valor_atributo +
+                      ", " +
+                      it_3.tipo_atributo +
+                      " - " +
+                      it_3.valor_atributo +
+                      ", " +
+                      it_4.tipo_atributo +
+                      " - " +
+                      it_4.valor_atributo,
+                    precio: this.producto.precio_sin_iva === "" ? "" : this.producto.precio_sin_iva,
+                    referencia: "",
+                    stock: this.producto.cantidad === "" ? 1 : this.producto.cantidad,
+                    ean13: "",
+                    cod_arancel: "",
+                    peso: this.producto.peso === "" ? "" : this.producto.peso,
+                    id_atributo: [it_1.id_atributo, it_2.id_atributo, it_3.id_atributo, it_4.id_atributo],
+                  });
+                });
+              });
+            });
+          });
+        }
+        // });
+
+        this.atributos_seleccionados = [];
+
+        return;
+        // Se añaden las combinaciones dependiendo de lo que tengamos seleccionado
+        // el primero es para tallas y colores
+        // el segundo para tallas
+        // el tercero para colores
+        if (this.atributos_talla_seleccionados.length > 0 && this.atributos_color_seleccionados.length > 0) {
+          this.atributos_talla_seleccionados.forEach((talla) => {
+            this.atributos_color_seleccionados.forEach((color) => {
+              this.combinaciones_producto_nuevas.push({
+                nombre_combinacion: "Color - " + color.valor_atributo + ", Talla - " + talla.valor_atributo,
+                precio: this.producto.precio_sin_iva === "" ? "" : this.producto.precio_sin_iva,
+                referencia: "",
+                stock: this.producto.cantidad === "" ? 1 : this.producto.cantidad,
+                ean13: "",
+                cod_arancel: "",
+                peso: this.producto.peso === "" ? "" : this.producto.peso,
+                id_atributo: [talla.id_atributo, color.id_atributo],
+              });
+            });
+          });
+        } else if (this.atributos_talla_seleccionados.length > 0 && this.atributos_color_seleccionados.length === 0) {
+          this.atributos_talla_seleccionados.forEach((talla) => {
+            this.combinaciones_producto_nuevas.push({
+              nombre_combinacion: "Talla - " + talla.valor_atributo,
+              precio: this.producto.precio_sin_iva === "" ? "" : this.producto.precio_sin_iva,
+              referencia: "",
+              stock: this.producto.cantidad === "" ? 1 : this.producto.cantidad,
+              ean13: "",
+              cod_arancel: "",
+              peso: this.producto.peso === "" ? "" : this.producto.peso,
+              id_atributo: [talla.id_atributo],
+            });
+          });
+        } else if (this.atributos_color_seleccionados.length > 0 && this.atributos_talla_seleccionados.length === 0) {
+          this.atributos_color_seleccionados.forEach((color) => {
+            this.combinaciones_producto_nuevas.push({
+              nombre_combinacion: "Color - " + color.valor_atributo,
+              precio: this.producto.precio_sin_iva === "" ? "" : this.producto.precio_sin_iva,
+              referencia: "",
+              stock: this.producto.cantidad === "" ? 1 : this.producto.cantidad,
+              ean13: "",
+              cod_arancel: "",
+              peso: this.producto.peso === "" ? "" : this.producto.peso,
+              id_atributo: [color.id_atributo],
+            });
+          });
+        }
+
+        this.atributos_color_seleccionados = [];
+        this.atributos_talla_seleccionados = [];
+      });
+    },
+    quitarAtributoSeleccionado(index) {
+      this.atributos_seleccionados.splice(index, 1);
+    },
     quitarTallaSeleccionada(index) {
       this.atributos_talla_seleccionados.splice(index, 1);
     },
@@ -601,13 +857,14 @@ export default {
       this.atributos_color_seleccionados.splice(index, 1);
     },
     atributoCreado() {
-      this.cargarAtributos();
+      this.cargarAtributosOld();
+      this.cargarTiposAtributos();
       this.loading = false;
       this.mensajeExito = "¡Se ha creado el atributo con éxito!";
       this.$refs.modal.open();
       this.$bvModal.hide("modal-atributos");
     },
-    cargarAtributos() {
+    cargarAtributosOld() {
       let url = "/pim/atributos/cargar-atributos";
 
       axios
@@ -1035,10 +1292,11 @@ export default {
 }
 
 .cuadro-color {
-  width: 13px;
-  height: 13px;
+  width: 11px;
+  height: 11px;
   border: 1px solid black;
   display: inline-block;
+  border-radius: 30px;
 }
 
 .container-atributos-seleccionados .badge i {

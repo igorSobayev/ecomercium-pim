@@ -19,7 +19,7 @@
           <td>{{ tienda.stock_total }}</td>
           <td>
             <b-dropdown text="Acciones" variant="outline-success">
-              <b-dropdown-item href="#">Editar tienda </b-dropdown-item>
+              <!-- <b-dropdown-item href="#">Editar tienda </b-dropdown-item> -->
               <b-dropdown-item :to="{ name: 'gestionar-productos-tienda', params: { id_tienda: tienda.id_tienda } }">Gestionar productos tienda</b-dropdown-item>
             </b-dropdown>
           </td>

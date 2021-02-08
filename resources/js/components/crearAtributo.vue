@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <!-- Form para crear un atributo -->
     <form @submit.prevent="guardarAtributo()" method="POST">
       <div class="row">
         <div class="col-lg-4">
@@ -7,8 +8,8 @@
             <label for="tipo_atributo">Tipo atributo <span class="text-danger">*</span></label>
             <select class="form-control" id="tipo_atributo" v-model="atributo.tipo_atributo" required>
               <option value="" selected disabled>Seleccionar atributo</option>
-              <option value="talla">Talla</option>
-              <option value="color">Color</option>
+              <option :value="tipo.tipo_atributo" v-for="(tipo, index) in tipos_atributos" :key="index">{{ tipo.tipo_atributo }}</option>
+              <!-- <option value="color">Color</option> -->
             </select>
           </div>
         </div>
@@ -79,6 +80,7 @@
 export default {
   data() {
     return {
+      tipos_atributos: [],
       atributo: {
         id_atributo: "",
         tipo_atributo: "",
@@ -101,9 +103,23 @@ export default {
     };
   },
   mounted() {
+    this.cargarTiposAtributos();
     this.cargarIdiomas();
   },
   methods: {
+    cargarTiposAtributos() {
+      let url = "/pim/atributos/cargar-tipos-atributos";
+
+      axios
+        .get(url)
+        .then((respuesta) => {
+          this.tipos_atributos = [];
+          this.tipos_atributos = [...respuesta.data];
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
     /**
      * Método para cargar los datos de los idiomas del país actual
      */

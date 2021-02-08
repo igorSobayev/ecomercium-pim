@@ -17,5 +17,6 @@ class DatabaseSeeder extends Seeder
         $this->call(IdiomasSeeder::class);
         $this->call(TiendasSeeder::class);
         $this->call(UsersSeeder::class);
+        $this->call(AtributosSeeder::class);
     }
 }

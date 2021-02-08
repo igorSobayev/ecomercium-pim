@@ -30,8 +30,16 @@ Route::prefix('/')->group(function () {
     Route::get('/pim/productos/cargar-datos-producto-editar/{id_producto}', [App\Http\Controllers\ProductosController::class, 'cargarDatosProductoEditar']);
     Route::post('/pim/media/add-media-producto', [App\Http\Controllers\ProductosController::class, 'addMediaToProduct']);
 
+    // Atributos
     Route::get('/pim/atributos/cargar-atributos', [App\Http\Controllers\AtributosController::class, 'cargarAtributos']);
+    Route::get('/pim/atributos/cargar-tipos-atributos', [App\Http\Controllers\AtributosController::class, 'cargarTiposAtributos']);
+    Route::get('/pim/atributos/datos-atributo-editar/{id_atributo}', [App\Http\Controllers\AtributosController::class, 'datosAtributoEditar']);
     Route::post('/pim/atributos/crear-atributo', [App\Http\Controllers\AtributosController::class, 'crearAtributo']);
+    Route::put('/pim/atributos/editar-atributo', [App\Http\Controllers\AtributosController::class, 'editarAtributo']);
+    Route::post('/pim/atributos/crear-tipo-atributo', [App\Http\Controllers\AtributosController::class, 'addNuevoTipo']);
+    Route::put('/pim/atributos/editar-tipo-atributo', [App\Http\Controllers\AtributosController::class, 'editarTipo']);
+    Route::delete('/pim/atributos/eliminar-tipo-atributo/{id_tipo_atributo}', [App\Http\Controllers\AtributosController::class, 'eliminarTipoAtributo']);
+    Route::delete('/pim/atributos/eliminar-atributo/{id_atributo}', [App\Http\Controllers\AtributosController::class, 'eliminarAtributo']);
 
     Route::get('/pim/tiendas/cargar-tiendas', [App\Http\Controllers\TiendasController::class, 'cargarTiendas']);
     Route::get('/pim/tiendas/cargar-productos-tienda/{id_tienda}', [App\Http\Controllers\TiendasController::class, 'cargarProductosTienda']);

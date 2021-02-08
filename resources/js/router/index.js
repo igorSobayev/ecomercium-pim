@@ -15,6 +15,9 @@ import CrearEditarProducto from './../views/productos/CrearEditarProducto'
 import Tiendas from './../views/tiendas/Tiendas'
 import GestionarProductosTienda from './../views/tiendas/GestionarProductosTienda'
 
+// Atributos
+import Atributos from './../views/atributos/Atributos'
+
 Vue.use(Router);
 
 export default new Router({
@@ -23,39 +26,44 @@ export default new Router({
     fallback: true,
     linkActiveClass: 'active',
     routes: [{
-            path: '*',
-            component: NotFound
-        },
-        // Home
-        {
-            path: '/',
-            name: 'home',
-            component: Home,
-        },
-        {
-            path: '/productos',
-            name: 'productos',
-            component: Productos,
-        },
-        {
-            path: '/productos/crear-producto',
-            name: 'crear-producto',
-            component: CrearEditarProducto,
-        },
-        {
-            path: '/productos/editar-producto/:id_producto',
-            name: 'editar-producto',
-            component: CrearEditarProducto
-        },
-        {
-            path: '/tiendas',
-            name: 'tiendas',
-            component: Tiendas,
-        },
-        {
-            path: '/tiendas/gestionar-productos/:id_tienda',
-            name: 'gestionar-productos-tienda',
-            component: GestionarProductosTienda
-        }
+        path: '*',
+        component: NotFound
+    },
+    // Home
+    {
+        path: '/',
+        name: 'home',
+        component: Home,
+    },
+    {
+        path: '/productos',
+        name: 'productos',
+        component: Productos,
+    },
+    {
+        path: '/productos/crear-producto',
+        name: 'crear-producto',
+        component: CrearEditarProducto,
+    },
+    {
+        path: '/productos/editar-producto/:id_producto',
+        name: 'editar-producto',
+        component: CrearEditarProducto
+    },
+    {
+        path: '/tiendas',
+        name: 'tiendas',
+        component: Tiendas,
+    },
+    {
+        path: '/tiendas/gestionar-productos/:id_tienda',
+        name: 'gestionar-productos-tienda',
+        component: GestionarProductosTienda
+    },
+    {
+        path: '/atributos',
+        name: 'atributos',
+        component: Atributos,
+    },
     ]
 });

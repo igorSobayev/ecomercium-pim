@@ -10,6 +10,7 @@
                 <b-nav-item :to="{name: 'productos'}">Todos los productos</b-nav-item>
                 <b-nav-item :to="{name: 'crear-producto'}">Añadir producto</b-nav-item>
                 <b-nav-item :to="{name: 'tiendas'}">Tiendas</b-nav-item>
+                <b-nav-item :to="{name: 'atributos'}">Atributos</b-nav-item>
             </b-navbar-nav>
         </b-collapse>
     </b-navbar>
