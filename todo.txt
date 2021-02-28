@@ -1,0 +1,20 @@
+Me he quedado trabajando con insertar combinaciones, atributos e imagenes.
+Hay que investigar como se haría todo esto, además, hay que ver como vamos a actualizar
+las combinaciones, lo más probable es que lo hagamos utilizando un método paracido a Sanflex.
+
+
+NOTAS
+Para crear una combinacion primero tenemos que gestionar el id_attribute_group que viene a ser
+una talla, un color o lo que sea. Esto quiere decir que la tabla principal de atributos es
+ps_attribute_group y no la de ps_attribute. En correspondencia al ws de prestashop, tenemos que 
+ps_attribute_group es Product options.
+Luego nos vamos a ps_attribute para añadir cada attribute correspondiente con su grupo, ya sea talla, color...
+Esto corresponde con Product options values.
+Esta creacion nos devolvera un id_attribute.
+
+Después procedemos a crear las combinaciones con esos datos devueltos.
+
+
+color 30
+talla 26
+id producto 51

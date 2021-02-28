@@ -42,4 +42,68 @@ class Producto extends Model
             ->where('id_producto', $id_producto)->get()->sum('cantidad');
         return $stock + $stock_combinaciones;
     }
+
+    /**
+     * Recuperamos todos los datos del producto que están en el pim para subir o actualizar el producto
+     * en una tienda en especifico
+     */
+    public function getProductFullData(int $id_producto)
+    {
+        $product = Producto::select(
+            'referencia',
+            'marca',
+            'precio_sin_iva',
+            'precio_coste',
+            'cantidad',
+            'producto_combinacion',
+            'activo',
+            'ean13',
+            'cod_arancel',
+            'peso'
+        )->where('id_producto', $id_producto)->first();
+
+        $product->idiomas = ProductoIdioma::select(
+            'id_idioma',
+            'nombre_producto',
+            'slug',
+            'descr_corta',
+            'descr_larga',
+            'tit_seo',
+            'descr_seo'
+        )->where('id_producto', $id_producto)->get();
+
+        $product->imagenes = ProductoImagen::select('url_img')->where('id_producto', $id_producto)->get()->pluck('url_img');
+
+        if ($product->producto_combinacion == true) {
+            $product->combinaciones = Combinacion::select(
+                'id_combinacion',
+                'referencia',
+                'ean13',
+                'cod_arancel',
+                'precio_sin_iva',
+                'cantidad',
+                'peso',
+                'nombre_combinacion'
+            )->where('id_producto', $id_producto)->get();
+
+            foreach ($product->combinaciones as $key => $combinacion) {
+
+                $combinacion->atributos = AtributoCombinacion::select(
+                    'tipo_atributo',
+                    'color',
+                    'pim_atributos.id_atributo'
+                )->join('pim_atributos', 'pim_atributos.id_atributo', '=', 'pim_atributos_combinaciones.id_atributo')
+                    ->where('id_combinacion', $combinacion->id_combinacion)->get();
+
+                foreach ($combinacion->atributos as $atributo) {
+                    $atributo->idiomas = AtributoIdioma::select('id_idioma', 'valor_atributo')
+                        ->where('id_atributo', $atributo->id_atributo)->get();
+                }
+            }
+        } else {
+            $product->combinaciones = [];
+        }
+
+        return $product;
+    }
 }

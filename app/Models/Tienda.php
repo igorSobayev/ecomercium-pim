@@ -35,4 +35,16 @@ class Tienda extends Model
         }
         return $stock_total;
     }
+
+    public function getTiendaData(int $id_tienda)
+    {
+        return $this->select(
+            'id_tienda',
+            'nombre_tienda',
+            'tipo_tienda',
+            'api_key',
+            'store_root',
+            'debug'
+        )->where('id_tienda', $id_tienda)->first();
+    }
 }

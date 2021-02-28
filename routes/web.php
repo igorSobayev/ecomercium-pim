@@ -53,6 +53,7 @@ Route::prefix('/')->group(function () {
     Route::get('/pim/ps-webservices/test3', [App\Http\Controllers\PrestaShopWebservicesController::class, 'test3']);
     Route::get('/pim/ps-webservices/test4', [App\Http\Controllers\PrestaShopWebservicesController::class, 'test4']);
     Route::get('/pim/ps-webservices/test5', [App\Http\Controllers\PrestaShopWebservicesController::class, 'test5']);
+    Route::get('/pim/ps-webservices/test6', [App\Http\Controllers\PrestaShopWebservicesController::class, 'test6']);
 
     // IMPORTANTE, ESTO ES PARA ELIMINAR EL # DE LA URL
     Route::get('/{path}', [App\Http\Controllers\HomeController::class, 'index'])->where('path', '.*');

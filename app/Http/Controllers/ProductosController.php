@@ -15,11 +15,30 @@ class ProductosController extends Controller
 {
     //
 
-    public function cargarProductos()
+    public function cargarProductos(Request $request)
     {
-        return Producto::select('pim_productos.id_producto', 'referencia', 'precio_sin_iva', 'cantidad', 'nombre_producto')
+        $productos = Producto::select(
+            'pim_productos.id_producto',
+            'referencia',
+            'precio_sin_iva',
+            'cantidad',
+            'nombre_producto'
+        )
             ->join('pim_productos_idioma', 'pim_productos_idioma.id_producto', '=', 'pim_productos.id_producto')
-            ->where('pim_productos_idioma.id_idioma', 1)->get();
+            ->where('pim_productos_idioma.id_idioma', 1)->where('nombre_producto', 'like', '%' . $request->filtro . '%')
+            ->paginate(1);
+
+        return [
+            'pagination' => [
+                'total' => $productos->total(),
+                'current_page' => $productos->currentPage(),
+                'per_page' => $productos->perPage(),
+                'last_page' => $productos->lastPage(),
+                'from' => $productos->firstItem(),
+                'to' => $productos->lastPage(),
+            ],
+            'productos' => $productos,
+        ];
     }
 
     public function crearProducto(Request $request)

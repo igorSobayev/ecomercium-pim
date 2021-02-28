@@ -1,76 +1,107 @@
 <template>
-  <section class="body d-flex justify-content-center row">
-    <div class="col-lg-5">
-      <div class="container-fluid border container-columna-listado">
-        <h3>Productos en la tienda</h3>
-        <hr />
-        <!--  -->
-        <div class="container-filtro-datos d-flex">
-          <div class="input-group input-group-sm col-lg-5 mb-3">
-            <span class="input-group-text" id="inputGroup-sizing-sm"><i class="fas fa-filter"></i></span>
-            <input type="text" class="form-control" placeholder="Filtro" />
+  <section class="body">
+    <div class="container-elements d-flex justify-content-center row" v-if="!loading">
+      <div class="col-lg-5">
+        <div class="container-fluid border container-columna-listado">
+          <h3>Productos en la tienda</h3>
+          <hr />
+          <!--  -->
+          <div class="container-filtro-datos d-flex">
+            <div class="input-group input-group-sm col-lg-5 mb-3">
+              <span class="input-group-text" id="inputGroup-sizing-sm"><i class="fas fa-filter"></i></span>
+              <input type="text" class="form-control" v-model="filtroProductosTienda" placeholder="Filtro" />
+            </div>
+            <div class="col">
+              <b-button variant="success" disabled size="sm">
+                Seleccionados <b-badge variant="light">{{ numProductosTiendaSeleccionados }}</b-badge>
+              </b-button>
+              <b-button v-if="numProductosTiendaSeleccionados > 0" @click="limpiarProductosTiendaSeleccionados" variant="danger" title="Deseleccionar elementos" size="sm">
+                <i class="fas fa-times"></i>
+              </b-button>
+            </div>
           </div>
-          <div class="col">
-            <b-button variant="success" disabled size="sm">
-              Seleccionados <b-badge variant="light">{{ numProductosTiendaSeleccionados }}</b-badge>
-            </b-button>
-            <b-button v-if="numProductosTiendaSeleccionados > 0" @click="limpiarProductosTiendaSeleccionados" variant="danger" title="Deseleccionar elementos" size="sm">
-              <i class="fas fa-times"></i>
-            </b-button>
+          <!--  -->
+          <div class="container-listado-elementos">
+            <!-- En caso de que no estemos filtrando se enseñan todos los productos -->
+            <b-form-group v-slot="{ ariaDescribedby }" v-if="productosTiendaFiltrados.length == 0">
+              <b-form-checkbox-group
+                v-model="productosTiendaSeleccionados"
+                :options="productosTienda"
+                button-variant="light"
+                :aria-describedby="ariaDescribedby"
+                stacked
+                buttons
+              ></b-form-checkbox-group>
+            </b-form-group>
+            <!-- En caso de estar filtrando productos -->
+            <b-form-group v-slot="{ ariaDescribedby }" v-else>
+              <b-form-checkbox-group
+                v-model="productosTiendaSeleccionados"
+                :options="productosTiendaFiltrados"
+                button-variant="light"
+                :aria-describedby="ariaDescribedby"
+                stacked
+                buttons
+              ></b-form-checkbox-group>
+            </b-form-group>
+          </div>
+          <!--  -->
+        </div>
+      </div>
+      <div class="col-lg-1">
+        <div class="container-fluid border container-botones-medio">
+          <b-button variant="outline-primary" :disabled="numTodosProductosSeleccionados === 0" @click="addProductosTienda"><i class="fas fa-arrow-left"></i></b-button>
+          <b-button variant="outline-info" :disabled="numProductosTiendaSeleccionados === 0" @click="removeProductosTienda"><i class="fas fa-arrow-right"></i></b-button>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="container-fluid border container-columna-listado">
+          <h3>Todos los productos</h3>
+          <hr />
+          <div class="container-filtro-datos d-flex">
+            <div class="input-group input-group-sm col-lg-5 mb-3">
+              <span class="input-group-text" id="inputGroup-sizing-sm"><i class="fas fa-filter"></i></span>
+              <input type="text" class="form-control" v-model="filtroTodosProductos" placeholder="Filtro" />
+            </div>
+            <div class="col">
+              <b-button variant="success" disabled size="sm">
+                Seleccionados <b-badge variant="light">{{ numTodosProductosSeleccionados }}</b-badge>
+              </b-button>
+              <b-button v-if="numTodosProductosSeleccionados > 0" @click="limpiarTodosProductosSeleccionados" variant="danger" title="Deseleccionar elementos" size="sm">
+                <i class="fas fa-times"></i>
+              </b-button>
+            </div>
+          </div>
+          <div class="container-listado-elementos">
+            <b-form-group v-slot="{ ariaDescribedby }" v-if="todosProductosFiltrados.length == 0">
+              <b-form-checkbox-group
+                v-model="todosProductosSeleccionados"
+                :options="todosProductos"
+                button-variant="light"
+                :aria-describedby="ariaDescribedby"
+                stacked
+                buttons
+              ></b-form-checkbox-group>
+            </b-form-group>
+            <b-form-group v-slot="{ ariaDescribedby }" v-else>
+              <b-form-checkbox-group
+                v-model="todosProductosSeleccionados"
+                :options="todosProductosFiltrados"
+                button-variant="light"
+                :aria-describedby="ariaDescribedby"
+                stacked
+                buttons
+              ></b-form-checkbox-group>
+            </b-form-group>
           </div>
         </div>
-        <!--  -->
-        <div class="container-listado-elementos">
-          <b-form-group v-slot="{ ariaDescribedby }">
-            <b-form-checkbox-group
-              v-model="productosTiendaSeleccionados"
-              :options="productosTienda"
-              button-variant="light"
-              :aria-describedby="ariaDescribedby"
-              stacked
-              buttons
-            ></b-form-checkbox-group>
-          </b-form-group>
-        </div>
-        <!--  -->
       </div>
     </div>
-    <div class="col-lg-1">
-      <div class="container-fluid border container-botones-medio">
-        <b-button variant="outline-primary" :disabled="numTodosProductosSeleccionados === 0" @click="addProductosTienda"><i class="fas fa-arrow-left"></i></b-button>
-        <b-button variant="outline-info" :disabled="numProductosTiendaSeleccionados === 0" @click="removeProductosTienda"><i class="fas fa-arrow-right"></i></b-button>
-      </div>
-    </div>
-    <div class="col-lg-5">
-      <div class="container-fluid border container-columna-listado">
-        <h3>Todos los productos</h3>
-        <hr />
-        <div class="container-filtro-datos d-flex">
-          <div class="input-group input-group-sm col-lg-5 mb-3">
-            <span class="input-group-text" id="inputGroup-sizing-sm"><i class="fas fa-filter"></i></span>
-            <input type="text" class="form-control" placeholder="Filtro" />
-          </div>
-          <div class="col">
-            <b-button variant="success" disabled size="sm">
-              Seleccionados <b-badge variant="light">{{ numTodosProductosSeleccionados }}</b-badge>
-            </b-button>
-            <b-button v-if="numTodosProductosSeleccionados > 0" @click="limpiarTodosProductosSeleccionados" variant="danger" title="Deseleccionar elementos" size="sm">
-              <i class="fas fa-times"></i>
-            </b-button>
-          </div>
-        </div>
-        <div class="container-listado-elementos">
-          <b-form-group v-slot="{ ariaDescribedby }">
-            <b-form-checkbox-group
-              v-model="todosProductosSeleccionados"
-              :options="todosProductos"
-              button-variant="light"
-              :aria-describedby="ariaDescribedby"
-              stacked
-              buttons
-            ></b-form-checkbox-group>
-          </b-form-group>
-        </div>
+    <div class="container-elements" v-else>
+      <h3 class="col-lg-12">Espere mientras se están sincronizando los productos</h3>
+      <div class="contenedor-carga">
+        <!-- <bounce-loader color="#CD1317"></bounce-loader> -->
+        <scale-loader color="#D1072E" :height="50" :width="8"></scale-loader>
       </div>
     </div>
     <!--  -->
@@ -94,6 +125,9 @@ export default {
   },
   data() {
     return {
+      filtroProductosTienda: "",
+      filtroTodosProductos: "",
+      loading: false,
       productosTienda: [],
       productosTiendaFiltrados: [],
       productosTiendaSeleccionados: [],
@@ -110,6 +144,18 @@ export default {
     },
     numTodosProductosSeleccionados() {
       return this.todosProductosSeleccionados.length;
+    },
+  },
+  watch: {
+    filtroProductosTienda: function (newOne, oldOne) {
+      this.productosTiendaFiltrados = this.productosTienda.filter((producto) => {
+        return producto.text.includes(newOne);
+      });
+    },
+    filtroTodosProductos: function (newOne, oldOne) {
+      this.todosProductosFiltrados = this.todosProductos.filter((producto) => {
+        return producto.text.includes(newOne);
+      });
     },
   },
   methods: {
@@ -137,7 +183,7 @@ export default {
 
       this.$dialog.confirm(message, options).then((dialog) => {
         let url = "/pim/tiendas/add-productos-tienda/" + this.$route.params.id_tienda;
-
+        this.loading = true;
         axios
           .post(url, {
             productos: this.todosProductosSeleccionados,
@@ -147,6 +193,7 @@ export default {
             this.cargarProductosTienda();
             this.mensajeExito = "¡Se han añadido los productos con éxito!";
             this.$refs.modal.open();
+            this.loading = false;
           })
           .catch((error) => {
             console.log(error);
@@ -285,5 +332,9 @@ export default {
     border-radius: 20px; /* roundness of the scroll thumb */
     border: 3px solid #f0f0f0; /* creates padding around scroll thumb */
   }
+}
+
+.container-elements {
+  text-align: center;
 }
 </style>

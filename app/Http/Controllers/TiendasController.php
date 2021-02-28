@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PrestaConnector;
 use App\Models\Producto;
 use App\Models\Tienda;
 use App\Models\TiendaProducto;
@@ -69,13 +70,17 @@ class TiendasController extends Controller
 
     public function addProductosTienda(int $id_tienda = null, Request $request)
     {
-        // return $request->productos;
+        $obj_ps = new PrestaConnector();
+        
         if (!is_null($id_tienda)) {
             foreach ($request->productos as $producto) {
                 TiendaProducto::create([
                     'id_tienda' => $id_tienda,
                     'id_producto' => $producto
                 ]);
+
+                // Se añade el producto a la tienda
+                $obj_ps->addProductToTienda($id_tienda, $producto);
             }
 
             return response()->json([

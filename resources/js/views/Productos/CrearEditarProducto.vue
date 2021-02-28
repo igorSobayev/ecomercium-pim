@@ -191,7 +191,7 @@
                             </div>
                             <div class="input-group flex-nowrap mb-2">
                               <span class="input-group-text" id="addon-wrapping">Peso</span>
-                              <input type="text" class="form-control" placeholder="125ml" v-model="producto.peso" />
+                              <input type="text" class="form-control" placeholder="125" v-model="producto.peso" />
                             </div>
                             <div class="input-group flex-nowrap mb-2">
                               <span class="input-group-text" id="addon-wrapping">Precio sin iva</span>
