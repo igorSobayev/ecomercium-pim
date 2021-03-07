@@ -106,4 +106,17 @@ class Producto extends Model
 
         return $product;
     }
+
+    /**
+     * Función que lanza la llamada a la actualización de los datos del producto en todas las tiendas que existe
+     */
+    public function updateInShops(int $id_producto) {
+
+        $obj_ps = new PrestaConnector();
+        $productos_tiendas = TiendaProducto::select('id_tienda', 'id_producto')->where('id_producto', $id_producto)->get();
+
+        foreach ($productos_tiendas as $prod_tienda) {
+            $obj_ps->addProductToTienda($prod_tienda->id_tienda, $prod_tienda->id_producto);
+        }
+    }
 }

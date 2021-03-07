@@ -3,7 +3,7 @@
     <div class="col-lg-10 pb-2 pl-0">
       <h2>Listado de atributos <b-button v-b-modal.modal-nuevo-tipo variant="outline-success">Añadir un tipo nuevo</b-button></h2>
     </div>
-    <div class="col-lg-10 pb-4 pl-0 columna-segundaria-crear-producto">
+    <div class="col-lg-10 pb-4 pl-0 columna-segundaria-crear-producto" v-if="!loading">
       <div class="row">
         <div class="col-lg-6 tipo-atributo-card" v-for="(tipo, index) in atributosFinales" :key="index">
           <div class="d-flex justify-content-end mb-2">
@@ -38,6 +38,15 @@
         <!-- Fin checks -->
       </div>
     </div>
+
+    <div class="card-body contenedor-carga" v-else>
+      <h3 class="col-lg-12">Espere mientras se cargan los atributos</h3>
+      <div class="contenedor-carga">
+        <!-- <bounce-loader color="#CD1317"></bounce-loader> -->
+        <scale-loader color="#D1072E" :height="50" :width="8"></scale-loader>
+      </div>
+    </div>
+
     <!-- Elementos ocultos -->
     <!-- Crear nuevo tipo -->
     <b-modal id="modal-nuevo-tipo" size="md" title="Añadir un nuevo tipo de atributo" :hide-footer="true">
@@ -176,6 +185,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       tipos_atributos: [],
       atributos: [],
       atributosFinales: [],
@@ -274,6 +284,7 @@ export default {
       this.$bvModal.hide("modal-atributos");
     },
     cargarTiposAtributos() {
+      this.loading = true;
       let url = "/pim/atributos/cargar-tipos-atributos";
 
       axios
@@ -364,6 +375,7 @@ export default {
           this.atributos = [];
           this.atributos = [...respuesta.data];
           this.componerAtributosFinales();
+          this.loading = false;
         })
         .catch((error) => {
           console.log(error);

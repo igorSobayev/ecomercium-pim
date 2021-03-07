@@ -14,6 +14,7 @@ import CrearEditarProducto from './../views/productos/CrearEditarProducto'
 // Tiendas
 import Tiendas from './../views/tiendas/Tiendas'
 import GestionarProductosTienda from './../views/tiendas/GestionarProductosTienda'
+import EditarTienda from './../views/tiendas/EditarTienda'
 
 // Atributos
 import Atributos from './../views/atributos/Atributos'
@@ -59,6 +60,11 @@ export default new Router({
         path: '/tiendas/gestionar-productos/:id_tienda',
         name: 'gestionar-productos-tienda',
         component: GestionarProductosTienda
+    },
+    {
+        path: '/tiendas/editar-tienda/:id_tienda',
+        name: 'editar-tienda',
+        component: EditarTienda
     },
     {
         path: '/atributos',

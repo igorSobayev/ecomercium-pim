@@ -3,7 +3,7 @@
     <div class="col-lg-10 pb-4 pl-0">
       <h2>Listado de todas las tiendas y sus productos</h2>
     </div>
-    <table class="table table-hover col-lg-10">
+    <table class="table table-hover col-lg-10" v-if="!loading">
       <thead>
         <tr>
           <th scope="col">Tienda</th>
@@ -19,13 +19,20 @@
           <td>{{ tienda.stock_total }}</td>
           <td>
             <b-dropdown text="Acciones" variant="outline-success">
-              <!-- <b-dropdown-item href="#">Editar tienda </b-dropdown-item> -->
+              <b-dropdown-item :to="{ name: 'editar-tienda', params: { id_tienda: tienda.id_tienda } }">Editar tienda</b-dropdown-item>
               <b-dropdown-item :to="{ name: 'gestionar-productos-tienda', params: { id_tienda: tienda.id_tienda } }">Gestionar productos tienda</b-dropdown-item>
             </b-dropdown>
           </td>
         </tr>
       </tbody>
     </table>
+    <div class="card-body contenedor-carga" v-else>
+      <h3 class="col-lg-12">Espere mientras se cargan los productos</h3>
+      <div class="contenedor-carga">
+        <!-- <bounce-loader color="#CD1317"></bounce-loader> -->
+        <scale-loader color="#D1072E" :height="50" :width="8"></scale-loader>
+      </div>
+    </div>
   </section>
 </template>
 
@@ -37,17 +44,19 @@ export default {
   data() {
     return {
       tiendas: [],
+      loading: false,
     };
   },
   methods: {
     cargarTiendas() {
+      this.loading = true;
       let url = "/pim/tiendas/cargar-tiendas";
 
       axios
         .get(url)
         .then((respuesta) => {
-          console.log(respuesta.data);
           this.tiendas = respuesta.data;
+          this.loading = false;
         })
         .catch((error) => {
           console.log(error);
@@ -57,4 +66,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.contenedor-carga {
+  text-align: center;
+}
+</style>

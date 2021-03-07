@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Error;
 use App\Models\PrestaConnector;
 use App\Models\Producto;
+use App\Models\Tienda;
 use CURLFile;
 use Exception;
 use Illuminate\Http\Request;
@@ -170,12 +171,20 @@ class PrestaShopWebservicesController extends Controller
      */
     public function test6(Request $request)
     {
-
-        $obj_ps = new PrestaConnector();
+        
+        $obj_tienda = new Tienda();
         $obj_product = new Producto();
-        return $obj_ps->checkProductExistByRef(1, "Refclear-1");
-        return $obj_ps->addProductToTienda(1, 7);
-        // return $obj_product->getProductFullData(7);
+        $obj_ps = new PrestaConnector();
+        $now = new \DateTime();
+
+        $con_data = $obj_tienda->getTiendaData(1);
+        $ws = new PrestaShopWebservice($con_data->store_root, $con_data->api_key, $con_data->debug);
+
+        // $obj_ps->addProductToTienda(1, 7);
+        // $obj_ps->editarCombination(1, null, 15, 270);
+        $obj_ps->editProduct(1, $obj_product->getProductFullData(7), $con_data);
+        // dump($obj_ps->getCombinationOptionValues(1, 267));
+        
         return 'goes';
 
         $now = new \DateTime();

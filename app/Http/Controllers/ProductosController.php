@@ -26,7 +26,7 @@ class ProductosController extends Controller
         )
             ->join('pim_productos_idioma', 'pim_productos_idioma.id_producto', '=', 'pim_productos.id_producto')
             ->where('pim_productos_idioma.id_idioma', 1)->where('nombre_producto', 'like', '%' . $request->filtro . '%')
-            ->paginate(1);
+            ->paginate(50);
 
         return [
             'pagination' => [
@@ -123,12 +123,12 @@ class ProductosController extends Controller
             'id_producto' => $producto->id_producto,
             'message' => 'Se ha creado el producto con éxito'
         ], 200);
-
-        return $request;
     }
 
     public function guardarProductoEditado(Request $request)
     {
+        $obj_producto = new Producto();
+        
         // Creo el producto principal
         $producto = Producto::where('id_producto', $request->producto['id_producto'])
             ->update([
@@ -232,12 +232,13 @@ class ProductosController extends Controller
             $obj_media->eliminarMedia($media);
         }
 
+        // Se actualiza el producto en todas las tiendas en las que esta
+        $obj_producto->updateInShops($request->producto['id_producto']);
+
         return response()->json([
             'id_producto' => $request->producto['id_producto'],
             'message' => 'Se ha actualizado el producto con éxito'
         ], 200);
-
-        return $request;
     }
 
     public function cargarDatosProductoEditar(int $id_producto)

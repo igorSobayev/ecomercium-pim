@@ -46,6 +46,8 @@ Route::prefix('/')->group(function () {
     Route::get('/pim/tiendas/cargar-todos-productos/{id_tienda}', [App\Http\Controllers\TiendasController::class, 'cargarTodosProductos']);
     Route::post('/pim/tiendas/add-productos-tienda/{id_tienda}', [App\Http\Controllers\TiendasController::class, 'addProductosTienda']);
     Route::post('/pim/tiendas/remove-productos-tienda/{id_tienda}', [App\Http\Controllers\TiendasController::class, 'removeProductosTienda']);
+    Route::get('/pim/tiendas/cargar-datos-tienda/{id_tienda}', [App\Http\Controllers\TiendasController::class, 'cargarDatosTienda']);
+    Route::post('/pim/tiendas/guardar-tienda-editada', [App\Http\Controllers\TiendasController::class, 'guardarTiendaEditada']);
 
     // Rutas para controlar las conexiones de los webservices
     Route::get('/pim/ps-webservices/test', [App\Http\Controllers\PrestaShopWebservicesController::class, 'test']);

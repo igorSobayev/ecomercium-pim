@@ -111,7 +111,7 @@ export default {
         from: 0,
         to: 0,
       },
-      offset: 1,
+      offset: 50,
     };
   },
   computed: {

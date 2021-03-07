@@ -25,6 +25,28 @@ class TiendasController extends Controller
         return $tiendas;
     }
 
+    public function cargarDatosTienda($id_tienda)
+    {
+        $tienda = Tienda::select('id_tienda', 'nombre_tienda', 'tipo_tienda', 'api_key', 'store_root', 'debug')->where('id_tienda', $id_tienda)->first();
+        return $tienda;
+    }
+
+    public function guardarTiendaEditada(Request $request)
+    {
+        Tienda::where('id_tienda', $request->tienda['id_tienda'])
+            ->update([
+                'nombre_tienda' => $request->tienda['nombre_tienda'],
+                'tipo_tienda' => $request->tienda['tipo_tienda'],
+                'api_key' => $request->tienda['api_key'],
+                'store_root' => $request->tienda['store_root'],
+                'debug' => $request->tienda['debug']
+            ]);
+
+        return response()->json([
+            'message' => 'Se ha actualizado la tienda con éxito'
+        ], 200);
+    }
+
     public function cargarProductosTienda(int $id_tienda = null)
     {
         return Tienda::select(
@@ -71,7 +93,7 @@ class TiendasController extends Controller
     public function addProductosTienda(int $id_tienda = null, Request $request)
     {
         $obj_ps = new PrestaConnector();
-        
+
         if (!is_null($id_tienda)) {
             foreach ($request->productos as $producto) {
                 TiendaProducto::create([
