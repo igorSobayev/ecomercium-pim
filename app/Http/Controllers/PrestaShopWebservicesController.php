@@ -182,7 +182,8 @@ class PrestaShopWebservicesController extends Controller
 
         // $obj_ps->addProductToTienda(1, 7);
         // $obj_ps->editarCombination(1, null, 15, 270);
-        $obj_ps->editProduct(1, $obj_product->getProductFullData(7), $con_data);
+        // $obj_ps->editProduct(1, $obj_product->getProductFullData(7), $con_data);
+        $obj_ps->checkProductExistByRef(5, 'refproprueba');
         // dump($obj_ps->getCombinationOptionValues(1, 267));
         
         return 'goes';

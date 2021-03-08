@@ -1,7 +1,7 @@
 <template>
   <section class="body d-flex justify-content-center row">
     <div class="col-lg-10 pb-4 pl-0">
-      <h2>Listado de todas las tiendas y sus productos</h2>
+      <h2>Listado de todas las tiendas y sus productos <router-link :to="{ name: 'crear-tienda' }" class="btn btn-success btn-sm">Crear tienda</router-link></h2>
     </div>
     <table class="table table-hover col-lg-10" v-if="!loading">
       <thead>

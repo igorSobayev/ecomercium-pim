@@ -29,6 +29,7 @@ Route::prefix('/')->group(function () {
     Route::put('/pim/productos/guardar-producto-editado', [App\Http\Controllers\ProductosController::class, 'guardarProductoEditado']);
     Route::get('/pim/productos/cargar-datos-producto-editar/{id_producto}', [App\Http\Controllers\ProductosController::class, 'cargarDatosProductoEditar']);
     Route::post('/pim/media/add-media-producto', [App\Http\Controllers\ProductosController::class, 'addMediaToProduct']);
+    Route::post('/pim/productos/check-ref-prod', [App\Http\Controllers\ProductosController::class, 'checkRefExist']);
 
     // Atributos
     Route::get('/pim/atributos/cargar-atributos', [App\Http\Controllers\AtributosController::class, 'cargarAtributos']);
@@ -48,6 +49,7 @@ Route::prefix('/')->group(function () {
     Route::post('/pim/tiendas/remove-productos-tienda/{id_tienda}', [App\Http\Controllers\TiendasController::class, 'removeProductosTienda']);
     Route::get('/pim/tiendas/cargar-datos-tienda/{id_tienda}', [App\Http\Controllers\TiendasController::class, 'cargarDatosTienda']);
     Route::post('/pim/tiendas/guardar-tienda-editada', [App\Http\Controllers\TiendasController::class, 'guardarTiendaEditada']);
+    Route::post('/pim/tiendas/crear-tienda', [App\Http\Controllers\TiendasController::class, 'crearTienda']);
 
     // Rutas para controlar las conexiones de los webservices
     Route::get('/pim/ps-webservices/test', [App\Http\Controllers\PrestaShopWebservicesController::class, 'test']);

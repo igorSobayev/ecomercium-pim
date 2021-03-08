@@ -4,7 +4,7 @@
       <section class="card mb-4">
         <header class="card-header">
           <h2 class="card-title">
-            Editar tienda
+            <span v-if="editando"> Editar tienda</span><span v-else> Crear tienda </span>
             <button type="button" @click="guardarTienda()" class="btn btn-success btn-sm">Guardar tienda</button>
           </h2>
         </header>
@@ -14,7 +14,7 @@
               <div class="col-lg-4">
                 <div class="form-group">
                   <label for="nombre_tienda">Nombre tienda <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" v-model="tienda.nombre_tienda" id="nombre_tienda" required />
+                  <input type="text" class="form-control" placeholder="Nombre tienda" v-model="tienda.nombre_tienda" id="nombre_tienda" required />
                 </div>
               </div>
               <!--  -->
@@ -40,14 +40,14 @@
               <div class="col-lg-6">
                 <div class="form-group">
                   <label for="api_key">Api KEY <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" v-model="tienda.api_key" id="api_key" required />
+                  <input type="text" class="form-control" placeholder="Api KEY" v-model="tienda.api_key" id="api_key" required />
                 </div>
               </div>
               <!--  -->
               <div class="col-lg-6">
                 <div class="form-group">
                   <label for="store_root">Store root <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" v-model="tienda.store_root" id="store_root" required />
+                  <input type="text" class="form-control" placeholder="Store root" v-model="tienda.store_root" id="store_root" required />
                 </div>
               </div>
             </div>
@@ -80,16 +80,22 @@
 <script>
 export default {
   mounted() {
-    this.loading = true;
-    this.cargarDatosTienda();
+    if (this.$route.params.id_tienda !== undefined) {
+      this.editando = true;
+      this.loading = true;
+      this.cargarDatosTienda();
+    } else {
+      this.editando = false;
+    }
   },
   data() {
     return {
       loading: false,
+      editando: false,
       tienda: {
         id_tienda: "",
         nombre_tienda: "",
-        tipo_tienda: "",
+        tipo_tienda: "Prestashop",
         api_key: "",
         store_root: "",
         debug: false,
@@ -112,35 +118,70 @@ export default {
           console.log(error);
         });
     },
-    guardarTienda() {
+    crearTienda() {
       let message = {
         title: "Confirmación",
-        body: "¿Estas seguro de querer actualizar los datos de esta tienda?.",
+        body: "¿Estas seguro de querer crear esta tienda?.",
       };
 
       let options = {
-        okText: "Guardar",
+        okText: "Crear",
         cancelText: "Cancelar",
         backgropClose: true,
       };
 
       this.$dialog.confirm(message, options).then((dialog) => {
         this.loading = true;
-        let url = "/pim/tiendas/guardar-tienda-editada";
+        let url = "/pim/tiendas/crear-tienda";
 
         axios
           .post(url, {
-            tienda: this.tienda
+            tienda: this.tienda,
           })
           .then((res) => {
-            this.cargarDatosTienda();
-            this.mensajeExito = "¡Se ha actualizado la tienda con éxito!";
+            this.loading = false
+            // this.cargarDatosTienda();
+            this.mensajeExito = "¡Se ha creado la tienda con éxito!";
             this.$refs.modal.open();
           })
           .catch((error) => {
             console.log(error);
           });
       });
+    },
+    guardarTienda() {
+      if (!this.editando) {
+        this.crearTienda();
+      } else {
+        let message = {
+          title: "Confirmación",
+          body: "¿Estas seguro de querer actualizar los datos de esta tienda?.",
+        };
+
+        let options = {
+          okText: "Guardar",
+          cancelText: "Cancelar",
+          backgropClose: true,
+        };
+
+        this.$dialog.confirm(message, options).then((dialog) => {
+          this.loading = true;
+          let url = "/pim/tiendas/guardar-tienda-editada";
+
+          axios
+            .post(url, {
+              tienda: this.tienda,
+            })
+            .then((res) => {
+              this.cargarDatosTienda();
+              this.mensajeExito = "¡Se ha actualizado la tienda con éxito!";
+              this.$refs.modal.open();
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        });
+      }
     },
   },
 };

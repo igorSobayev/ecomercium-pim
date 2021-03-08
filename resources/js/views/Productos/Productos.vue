@@ -188,7 +188,6 @@ export default {
             this.cargarTodosProductos();
             this.mensajeExito = "¡Se ha eliminado el producto con éxito!";
             this.$refs.modal.open();
-            console.log(respuesta);
           })
           .catch((error) => {
             this.mensajeError = "<p class='text-white mb-2'>¡Ha ocurrido un error al eliminar el producto!</p>";

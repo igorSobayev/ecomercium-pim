@@ -241,7 +241,6 @@ export default {
       let url = "/pim/atributos/datos-atributo-editar/" + this.id_atributoEditar;
 
       axios.get(url).then((respuesta) => {
-        console.log(respuesta.data);
         this.atributoEditar.color = respuesta.data.atributo.color;
         this.atributoEditar.id_atributo = respuesta.data.atributo.id_atributo;
         this.atributoEditar.tipo_atributo = respuesta.data.atributo.tipo_atributo;
@@ -292,7 +291,6 @@ export default {
         .then((respuesta) => {
           this.tipos_atributos = [];
           this.tipos_atributos = [...respuesta.data];
-          //   console.log(this.tipos_atributos);
           this.cargarAtributos();
         })
         .catch((error) => {
@@ -320,7 +318,6 @@ export default {
         axios
           .delete(url)
           .then((respuesta) => {
-            console.log(respuesta);
             this.mensajeExito = "¡Se ha eliminado el tipo de atributo con éxito!";
             this.$refs.modal.open();
             this.cargarTiposAtributos();
@@ -353,7 +350,6 @@ export default {
         axios
           .delete(url)
           .then((respuesta) => {
-            console.log(respuesta);
             this.mensajeExito = "¡Se ha eliminado el atributo con éxito!";
             this.$refs.modal.open();
             this.cargarTiposAtributos();

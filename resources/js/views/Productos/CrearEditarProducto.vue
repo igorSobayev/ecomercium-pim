@@ -5,11 +5,11 @@
         <header class="card-header">
           <h2 class="card-title">
             <span v-if="!editando">Crear</span> <span v-else>Editando</span> producto
-            <button type="button" class="btn btn-success btn-sm">Guardar producto</button>
+            <button type="button" class="btn btn-success btn-sm" @click="checkRefExist()">Guardar producto</button>
           </h2>
         </header>
         <div class="card-body" v-if="!loading">
-          <form @submit.prevent="guardarProducto()" method="POST">
+          <form @submit.prevent="checkRefExist()" method="POST">
             <div class="container-crear-producto">
               <div class="row col-lg-12 d-flex container-principal">
                 <b-tabs card pills content-class="mt-3" class="border" lazy>
@@ -174,8 +174,8 @@
 
                           <div>
                             <div class="input-group flex-nowrap mb-2">
-                              <span class="input-group-text" id="addon-wrapping">Referencia</span>
-                              <input type="text" class="form-control" placeholder="RDSW1233SW" v-model="producto.referencia" />
+                              <span class="input-group-text" id="addon-wrapping">Referencia <span class="text-danger">*</span></span>
+                              <input type="text" class="form-control" placeholder="RDSW1233SW" v-model="producto.referencia" required />
                             </div>
                             <div class="input-group flex-nowrap mb-2">
                               <span class="input-group-text" id="addon-wrapping">Marca</span>
@@ -255,24 +255,6 @@
                                     <b-badge variant="info" class="mr-1" v-for="(atributo, index) in atributos_seleccionados" :key="index + '-' + atributo.id_atributo">
                                       {{ atributo.valor_atributo }} &nbsp; <i class="fas fa-times" @click="quitarAtributoSeleccionado(index)"></i>
                                     </b-badge>
-
-                                    <!-- OLD -->
-                                    <!-- <b-badge
-                                      variant="primary"
-                                      class="mr-1"
-                                      v-for="(sel_talla, index) in atributos_talla_seleccionados"
-                                      :key="index + '-' + sel_talla.id_atributo"
-                                    >
-                                      {{ sel_talla.valor_atributo }} &nbsp; <i class="fas fa-times" @click="quitarTallaSeleccionada(index)"></i>
-                                    </b-badge>
-                                    <b-badge
-                                      variant="success"
-                                      class="mr-1"
-                                      v-for="(sel_color, index) in atributos_color_seleccionados"
-                                      :key="index + '-' + sel_color.id_atributo"
-                                    >
-                                      {{ sel_color.valor_atributo }} &nbsp; <i class="fas fa-times" @click="quitarColorSeleccionado(index)"></i>
-                                    </b-badge> -->
                                   </div>
                                 </div>
                               </div>
@@ -361,49 +343,6 @@
                                   </div>
                                 </div>
                               </b-card>
-
-                              <!-- OLD -->
-                              <!-- <b-card header-tag="header" footer-tag="footer" class="mb-2 selector-atributos--tallas-card selector-atributos--card">
-                                <template #header>
-                                  <h6 class="mb-0">Tallas</h6>
-                                </template>
-                                <div class="row">
-                                  <div class="col-lg-6 atributo-col atributo-col--talla mb-1" v-for="(talla, index) in atributos_tallas" :key="index">
-                                    <div class="form-check">
-                                      <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        v-model="atributos_talla_seleccionados"
-                                        :value="{ id_atributo: talla.id_atributo, valor_atributo: talla.valor_atributo }"
-                                        :id="'talla-' + index + '-' + talla.id_atributo"
-                                      />
-                                      <label class="form-check-label" :for="'talla-' + index + '-' + talla.id_atributo"> {{ talla.valor_atributo }} </label>
-                                    </div>
-                                  </div>
-                                </div>
-                              </b-card>
-
-                              <b-card header-tag="header" footer-tag="footer" class="selector-atributos--colores-card selector-atributos--card">
-                                <template #header>
-                                  <h6 class="mb-0">Colores</h6>
-                                </template>
-                                <div class="row">
-                                  <div class="col-lg-6 atributo-col atributo-col--color mb-1" v-for="(color, index) in atributos_colores" :key="index">
-                                    <div class="form-check">
-                                      <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        v-model="atributos_color_seleccionados"
-                                        :value="{ id_atributo: color.id_atributo, valor_atributo: color.valor_atributo }"
-                                        :id="'color-' + index + '-' + color.id_atributo"
-                                      />
-                                      <label class="form-check-label" :for="'color-' + index + '-' + color.id_atributo">
-                                        <span class="cuadro-color" :style="'background-color:' + color.color"></span> {{ color.valor_atributo }}
-                                      </label>
-                                    </div>
-                                  </div>
-                                </div>
-                              </b-card> -->
                             </b-card-group>
                           </div>
 
@@ -468,6 +407,7 @@ export default {
   props: {},
   data() {
     return {
+      existeRef: false,
       customToolbar: [
         ["bold", "italic", "underline", "strike"],
         [{ list: "ordered" }, { list: "bullet" }],
@@ -555,6 +495,32 @@ export default {
     };
   },
   methods: {
+    checkRefExist() {
+      let url = "/pim/productos/check-ref-prod";
+
+      axios
+        .post(url, {
+          pro_ref: {
+            id_producto: this.producto.id_producto,
+            referencia: this.producto.referencia,
+          },
+        })
+        .then((response) => {
+          this.existeRef = response.data;
+
+          if (this.existeRef == true) {
+            this.mensajeError = "¡Esta referencia de producto ya existe, tiene que ser ÚNICA!";
+            this.$refs.modalError.open();
+          } else {
+            this.existeRef = false;
+            this.guardarProducto()
+          }
+
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
     cargarTiposAtributos() {
       let url = "/pim/atributos/cargar-tipos-atributos";
 
@@ -697,7 +663,6 @@ export default {
         }, {});
         atributosSeleccionadosAgrupados = Object.values(atributosSeleccionadosAgrupados);
 
-        console.log(atributosSeleccionadosAgrupados);
 
         // atributosSeleccionadosAgrupados.forEach((iterator) => {
         if (atributosSeleccionadosAgrupados.length === 1) {
@@ -872,7 +837,6 @@ export default {
         .then((respuesta) => {
           this.atributos_colores = respuesta.data.filter((atributo) => atributo.tipo_atributo === "color");
           this.atributos_tallas = respuesta.data.filter((atributo) => atributo.tipo_atributo === "talla");
-          console.log(respuesta.data);
         })
         .catch((error) => {
           console.log(error);
@@ -961,7 +925,6 @@ export default {
       axios
         .get(url)
         .then((respuesta) => {
-          console.log(respuesta);
           this.productoBruto = respuesta.data.producto;
           this.componerProductoEditar();
         })

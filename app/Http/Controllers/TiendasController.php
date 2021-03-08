@@ -31,6 +31,22 @@ class TiendasController extends Controller
         return $tienda;
     }
 
+    public function crearTienda(Request $request)
+    {
+
+        Tienda::create([
+            'nombre_tienda' => $request->tienda['nombre_tienda'],
+            'tipo_tienda' => $request->tienda['tipo_tienda'],
+            'api_key' => $request->tienda['api_key'],
+            'store_root' => $request->tienda['store_root'],
+            'debug' => $request->tienda['debug']
+        ]);
+
+        return response()->json([
+            'message' => 'Se ha creado la tienda con éxito'
+        ], 200);
+    }
+
     public function guardarTiendaEditada(Request $request)
     {
         Tienda::where('id_tienda', $request->tienda['id_tienda'])
@@ -73,9 +89,9 @@ class TiendasController extends Controller
         $productos = Producto::select(
             'pim_productos.id_producto',
             'pim_productos.referencia',
-            'pim_productos.activo',
+            // 'pim_productos.activo',
             'pim_productos_idioma.nombre_producto',
-            'pim_tiendas_productos.id_tienda_producto'
+            // 'pim_tiendas_productos.id_tienda_producto'
         )
             ->join('pim_productos_idioma', 'pim_productos_idioma.id_producto', '=', 'pim_productos.id_producto')
             ->leftJoin('pim_tiendas_productos', 'pim_tiendas_productos.id_producto', '=', 'pim_productos.id_producto')
@@ -84,7 +100,7 @@ class TiendasController extends Controller
                 $query->whereNull('pim_tiendas_productos.id_tienda_producto');
                 // $query->orWhere('pim_tiendas_productos.id_tienda', '!=', $id_tienda);
                 $query->orWhereNotIn('pim_tiendas_productos.id_producto', $productos_en_tienda);
-            })
+            })->groupBy(['pim_productos.referencia', 'pim_productos.id_producto', 'pim_productos_idioma.nombre_producto'])
             ->get();
 
         return $productos;

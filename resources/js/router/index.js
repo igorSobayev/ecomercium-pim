@@ -62,6 +62,11 @@ export default new Router({
         component: GestionarProductosTienda
     },
     {
+        path: '/tiendas/crear-tienda',
+        name: 'crear-tienda',
+        component: EditarTienda
+    },
+    {
         path: '/tiendas/editar-tienda/:id_tienda',
         name: 'editar-tienda',
         component: EditarTienda

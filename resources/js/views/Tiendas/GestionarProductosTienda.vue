@@ -220,7 +220,6 @@ export default {
             productos: this.productosTiendaSeleccionados,
           })
           .then((res) => {
-            console.log(res);
             this.cargarProductosTienda();
             this.cargarTodosProductos();
             this.mensajeExito = "¡Se han quitado los productos con éxito!";
@@ -240,13 +239,12 @@ export default {
           this.productosTienda = [];
           this.productosTiendaSeleccionados = [];
           this.productosTiendaFiltrados = [];
-          console.log(respuesta.data);
 
           respuesta.data.forEach((prod) => {
             this.productosTienda.push({
               text: prod.nombre_producto + " - " + prod.referencia,
               value: prod.id_tienda_producto,
-              activo: prod.activo,
+              // activo: prod.activo,
             });
           });
         })
@@ -264,13 +262,11 @@ export default {
           this.todosProductosSeleccionados = [];
           this.todosProductosFiltrados = [];
 
-          console.log(respuesta.data);
-
           respuesta.data.forEach((prod) => {
             this.todosProductos.push({
               text: prod.nombre_producto + " - " + prod.referencia,
               value: prod.id_producto,
-              activo: prod.activo,
+              // activo: prod.activo,
             });
           });
         })

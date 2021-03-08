@@ -41,6 +41,27 @@ class ProductosController extends Controller
         ];
     }
 
+    /**
+     * Se comprueba la referencia del producto antes de guardarlo, en caso de que exista
+     * Devuelve false si la referencia no existe y true si existe
+     */
+    public function checkRefExist(Request $request) {
+
+        if ($request->pro_ref['id_producto'] == null) {
+            $producto = Producto::select('referencia')->where('referencia', $request->pro_ref['referencia'])->first();
+        } else {
+            $producto = Producto::select('referencia')->where('referencia', $request->pro_ref['referencia'])
+            ->where('id_producto', '!=', $request->pro_ref['id_producto'])->first();
+        }
+
+        if ($producto == '') {
+            return false;
+        } else {
+            return true;
+        }
+        
+    }
+
     public function crearProducto(Request $request)
     {
         // Creo el producto principal
@@ -101,9 +122,9 @@ class ProductosController extends Controller
             foreach ($request->combinaciones as $key => $combinacion) {
                 $id_combinacion = Combinacion::create([
                     'id_producto' => $producto->id_producto,
-                    'referencia' => $combinacion['referencia'] ?? $request->producto['referencia'] . '-' . $key,
-                    'ean13' => $combinacion['ean13'] ?? $request->producto['ean13'] . '-' . $key,
-                    'cod_arancel' => $combinacion['cod_arancel'] ?? $request->producto['cod_arancel'] . '-' . $key,
+                    'referencia' => $combinacion['referencia'] ?? $request->producto['referencia'],
+                    'ean13' => $combinacion['ean13'] ?? $request->producto['ean13'],
+                    'cod_arancel' => $combinacion['cod_arancel'] ?? $request->producto['cod_arancel'],
                     'precio_sin_iva' => $combinacion['precio'],
                     'cantidad' => $combinacion['stock'],
                     'nombre_combinacion' => $combinacion['nombre_combinacion'],
@@ -189,9 +210,9 @@ class ProductosController extends Controller
             foreach ($request->combinaciones_nuevas as $key => $combinacion) {
                 $id_combinacion = Combinacion::create([
                     'id_producto' => $request->producto['id_producto'],
-                    'referencia' => $combinacion['referencia'] ?? $request->producto['referencia'] . '-' . $key,
-                    'ean13' => $combinacion['ean13'] ?? $request->producto['ean13'] . '-' . $key,
-                    'cod_arancel' => $combinacion['cod_arancel'] ?? $request->producto['cod_arancel'] . '-' . $key,
+                    'referencia' => $combinacion['referencia'] ?? $request->producto['referencia'],
+                    'ean13' => $combinacion['ean13'] ?? $request->producto['ean13'],
+                    'cod_arancel' => $combinacion['cod_arancel'] ?? $request->producto['cod_arancel'],
                     'precio_sin_iva' => $combinacion['precio'],
                     'cantidad' => $combinacion['stock'],
                     'nombre_combinacion' => $combinacion['nombre_combinacion'],
@@ -210,9 +231,9 @@ class ProductosController extends Controller
             foreach ($request->combinaciones_actualizadas as $key => $combinacion) {
                 $id_combinacion = Combinacion::where('id_combinacion', $combinacion['id_combinacion'])
                     ->update([
-                        'referencia' => $combinacion['referencia'] ?? $request->producto['referencia'] . '-' . $key,
-                        'ean13' => $combinacion['ean13'] ?? $request->producto['ean13'] . '-' . $key,
-                        'cod_arancel' => $combinacion['cod_arancel'] ?? $request->producto['cod_arancel'] . '-' . $key,
+                        'referencia' => $combinacion['referencia'] ?? $request->producto['referencia'],
+                        'ean13' => $combinacion['ean13'] ?? $request->producto['ean13'],
+                        'cod_arancel' => $combinacion['cod_arancel'] ?? $request->producto['cod_arancel'],
                         'precio_sin_iva' => $combinacion['precio'],
                         'cantidad' => $combinacion['stock'],
                         'nombre_combinacion' => $combinacion['nombre_combinacion'],

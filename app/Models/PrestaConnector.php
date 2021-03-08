@@ -500,7 +500,6 @@ class PrestaConnector extends Model
             ]);
 
             $fields = $blank->product->children();
-            // TODO, crear o comprobar primero la marca
             $fields->id_manufacturer = $this->getManufacturer($id_tienda, $product->marca);
             $fields->reference = $product->referencia;
 
@@ -590,9 +589,9 @@ class PrestaConnector extends Model
             $id_created_product = $fields->id;
 
             // Gestionamos las fotos si existen TODO TODO TODODOODODODODODODODODOODODODO descomentar antes de subir
-            // if (count($product->imagenes) > 0) {
-            //     $this->addImageToProduct($id_tienda, (int) $id_created_product, $product->imagenes);
-            // }
+            if (count($product->imagenes) > 0) {
+                $this->addImageToProduct($id_tienda, (int) $id_created_product, $product->imagenes);
+            }
 
             // Añadimos el stock en caso de que no tengamos combinaciones
             // En caso contrario empezamos a gestionar todo el tema de las combinaciones (atributos...)
