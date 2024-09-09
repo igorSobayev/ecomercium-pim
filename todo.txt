@@ -20,7 +20,3 @@ talla 26
 id producto 51
 
 DATOS OUTDOOR
-
-https://www.areaoutdoor.com/administracion
-desarrollo@vulpit.es
-WEBVu1P1t.es?!
